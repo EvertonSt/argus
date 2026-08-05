@@ -226,4 +226,26 @@ describe('GitHub Actions workflow', () => {
   it('makes the severity threshold configurable', () => {
     expect(workflow).toContain('ARGUS_SEVERITY_FAIL_THRESHOLD');
   });
+
+  it('waits on an explicit IPv4 address rather than "localhost"', () => {
+    // Regression: the demo app bound "::" and CI resolved localhost to
+    // 127.0.0.1, so wait-on timed out for 60s against a server that had
+    // already logged "listening".
+    expect(workflow).toContain('wait-on tcp:127.0.0.1:4317');
+    expect(workflow).not.toContain('wait-on http://localhost');
+  });
+
+  it('still produces a comment when the pipeline dies early', () => {
+    // Otherwise `ci-comment` exits non-zero, the file is never written, and
+    // the real failure is buried under an ENOENT from the comment step.
+    expect(workflow).toContain('Argus did not complete');
+  });
+});
+
+describe('demo app networking', () => {
+  const server = fs.readFileSync(path.join(ROOT, 'demo-app', 'src', 'server.ts'), 'utf-8');
+
+  it('binds 0.0.0.0 so IPv4 clients can reach it', () => {
+    expect(server).toContain("server.listen(PORT, '0.0.0.0'");
+  });
 });

@@ -267,7 +267,14 @@ export const server = http.createServer(async (req, res) => {
 
 const isMain = process.argv[1]?.replace(/\\/g, '/').endsWith('demo-app/src/server.ts');
 if (isMain) {
-  server.listen(PORT, () => {
+  // Bind 0.0.0.0 explicitly, not the Node default.
+  //
+  // Defaulting binds "::" (IPv6 any). On GitHub's Ubuntu runners `localhost`
+  // resolves to 127.0.0.1 first, and nothing answers there, so CI sat in
+  // wait-on for the full 60s timeout against a server that had already
+  // printed "listening". Binding 0.0.0.0 answers on IPv4 where every client
+  // actually looks.
+  server.listen(PORT, '0.0.0.0', () => {
     process.stdout.write(`Tasker demo app listening on http://localhost:${PORT}\n`);
   });
 }
