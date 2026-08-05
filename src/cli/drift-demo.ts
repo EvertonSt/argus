@@ -25,7 +25,7 @@ import { ensureDir, newRunId, readJson, writeJson } from '../shared/storage.js';
 import { executeSuite, captureDomSnapshots } from '../execution/index.js';
 import { triageFailures } from '../triage/index.js';
 import { pendingSelfHeals } from '../triage/validate.js';
-import { isReachable } from './demo-server.js';
+import { isReachable, stopSpawnedServer } from './demo-server.js';
 import type { TestCase } from '../shared/types.js';
 
 /**
@@ -150,7 +150,9 @@ async function main(): Promise<void> {
     }
     log.blank();
   } finally {
-    child.kill();
+    // Same trap as the main CLI: child.kill() only takes out the shell
+    // wrapper and orphans the node process holding the port.
+    await stopSpawnedServer(child, target);
   }
 }
 

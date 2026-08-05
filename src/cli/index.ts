@@ -62,10 +62,13 @@ program
         maxCases: Number(options.maxCases) || 12,
       });
 
-      demo?.stop();
+      // Await the shutdown before exiting: process.exit() would otherwise
+      // terminate this CLI mid-request and orphan the demo app, leaving the
+      // port held and the next run dead on EADDRINUSE.
+      await demo?.stop();
       process.exit(outcome.gateFailed ? 1 : 0);
     } catch (error) {
-      demo?.stop();
+      await demo?.stop();
       if (error instanceof ArgusError) {
         log.error(error.message, error.hint);
       } else {

@@ -244,8 +244,30 @@ describe('GitHub Actions workflow', () => {
 
 describe('demo app networking', () => {
   const server = fs.readFileSync(path.join(ROOT, 'demo-app', 'src', 'server.ts'), 'utf-8');
+  const demoServer = fs.readFileSync(path.join(ROOT, 'src', 'cli', 'demo-server.ts'), 'utf-8');
+  const cli = fs.readFileSync(path.join(ROOT, 'src', 'cli', 'index.ts'), 'utf-8');
 
   it('binds 0.0.0.0 so IPv4 clients can reach it', () => {
     expect(server).toContain("server.listen(PORT, '0.0.0.0'");
+  });
+
+  it('exposes a shutdown hook that closes the listener', () => {
+    // Regression: on Windows the CLI spawns the app through a shell wrapper,
+    // so killing the child PID orphaned the real node process and left the
+    // port held — the next run died on EADDRINUSE.
+    expect(server).toContain("pathname === '/__shutdown'");
+    expect(server).toContain('server.close(');
+  });
+
+  it('shuts the app down over HTTP before falling back to a tree kill', () => {
+    expect(demoServer).toContain('__shutdown');
+    expect(demoServer).toContain("'/T', '/F'");
+  });
+
+  it('awaits shutdown before exiting the process', () => {
+    // process.exit() after an un-awaited stop() would kill the CLI mid-request
+    // and orphan the server anyway.
+    expect(cli).toContain('await demo?.stop()');
+    expect(cli).not.toMatch(/^\s*demo\?\.stop\(\);/m);
   });
 });

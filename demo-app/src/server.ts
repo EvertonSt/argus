@@ -228,11 +228,16 @@ export const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === 'POST' && pathname === '/__shutdown') {
-    // Test-harness hook: lets `npm run demo:drift` replace this instance with
-    // one started under DEMO_DRIFT=1, without asking the user to hunt a PID.
+    // Test-harness hook. The CLI spawns this app through a shell wrapper, so
+    // killing the child PID can orphan this process and leave the port held —
+    // asking it to exit itself is the reliable path. Flush the response first,
+    // then close the listener so the socket is released cleanly.
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ ok: true }));
-    setTimeout(() => process.exit(0), 50);
+    res.end(JSON.stringify({ ok: true }), () => {
+      server.close(() => process.exit(0));
+      // Belt and braces: if a keep-alive connection stalls close(), leave anyway.
+      setTimeout(() => process.exit(0), 500).unref();
+    });
     return;
   }
 
