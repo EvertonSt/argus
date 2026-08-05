@@ -271,3 +271,16 @@ describe('demo app networking', () => {
     expect(cli).not.toMatch(/^\s*demo\?\.stop\(\);/m);
   });
 });
+
+describe('logger colour handling', () => {
+  const logger = fs.readFileSync(path.join(ROOT, 'src', 'shared', 'logger.ts'), 'utf-8');
+
+  it('honours FORCE_COLOR so piped output keeps its ANSI codes', () => {
+    // Needed to record the README demo, and it is what CI log viewers expect.
+    expect(logger).toContain('FORCE_COLOR');
+  });
+
+  it('still honours NO_COLOR', () => {
+    expect(logger).toContain('NO_COLOR');
+  });
+});

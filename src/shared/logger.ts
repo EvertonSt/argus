@@ -8,7 +8,11 @@
 
 const isTTY = process.stdout.isTTY === true;
 const noColor = process.env.NO_COLOR !== undefined || process.env.ARGUS_NO_COLOR === '1';
-const useColor = isTTY && !noColor;
+// FORCE_COLOR is the de-facto standard for "this pipe understands ANSI".
+// Without it, piping to a file or a CI log strips the colour that makes the
+// staged output readable — and the terminal output is part of this tool's pitch.
+const forceColor = process.env.FORCE_COLOR !== undefined && process.env.FORCE_COLOR !== '0';
+const useColor = (isTTY || forceColor) && !noColor;
 
 type Code = 'dim' | 'bold' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'gray';
 

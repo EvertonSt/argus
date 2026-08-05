@@ -6,9 +6,9 @@
 npx tsx src/cli/index.ts run --mock
 ```
 
-<!-- Replace with a recording of the command above. asciinema or a terminal GIF both work.
-     docs/demo.gif is referenced here so the image slot is ready. -->
 ![Argus running end to end](docs/demo.gif)
+
+<sub>A real `argus run --mock`, recorded from actual stdout — see [docs/README.md](docs/README.md). Waiting time during the Playwright stage is compressed; the clock shows true elapsed time.</sub>
 
 ---
 

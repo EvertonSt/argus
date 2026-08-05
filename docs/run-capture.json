@@ -1,0 +1,130 @@
+{
+  "exitCode": 1,
+  "totalMs": 37127,
+  "chunks": [
+    {
+      "t": 1284,
+      "text": "      \u001b[2m·\u001b[22m No server at http://localhost:4317 — starting the bundled demo app\n"
+    },
+    {
+      "t": 2246,
+      "text": "      \u001b[32m✓\u001b[39m Demo app running at http://localhost:4317\n"
+    },
+    {
+      "t": 2251,
+      "text": "\n\u001b[36m────────────────────────────────────────────────────────────────\u001b[39m\n"
+    },
+    {
+      "t": 2251,
+      "text": "\u001b[1m  ARGUS\u001b[22m \u001b[2m· autonomous AI QA agent\u001b[22m\n  \u001b[2m\u001b[33mMOCK MODE\u001b[39m · fixtures, no API calls · run run-20260805-193253-rbf5\u001b[22m\n\u001b[36m────────────────────────────────────────────────────────────────\u001b[39m\n\n\u001b[36m[1/7]\u001b[39m \u001b[1mIngest\u001b[22m \u001b[2m— building a feature inventory\u001b[22m\n"
+    },
+    {
+      "t": 2251,
+      "text": "      \u001b[2m·\u001b[22m Crawling http://localhost:4317\n"
+    },
+    {
+      "t": 2924,
+      "text": "        \u001b[90m/ — 10 interactive elements\u001b[39m\n        \u001b[90m/stats — 3 interactive elements\u001b[39m\n        \u001b[90m/about — 3 interactive elements\u001b[39m\n"
+    },
+    {
+      "t": 2926,
+      "text": "      \u001b[32m✓\u001b[39m 10 features discovered (source: crawl)\n\n\u001b[36m[2/7]\u001b[39m \u001b[1mPlan\u001b[22m \u001b[2m— Claude proposes a prioritised suite\u001b[22m\n"
+    },
+    {
+      "t": 2928,
+      "text": "      \u001b[32m✓\u001b[39m 8 test cases planned — 2 critical, 2 high, 3 medium, 1 low\n\n\u001b[36m[3/7]\u001b[39m \u001b[1mCodegen\u001b[22m \u001b[2m— templates first, LLM only where needed\u001b[22m\n"
+    },
+    {
+      "t": 2932,
+      "text": "        \u001b[90madd-task-happy-path.spec.ts — 4/4 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2933,
+      "text": "        \u001b[90mdelete-removes-clicked-task.spec.ts — 3/3 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2934,
+      "text": "        \u001b[90mcomplete-persists-after-reload.spec.ts — 4/4 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2935,
+      "text": "        \u001b[90mtask-list-renders.spec.ts — 3/3 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2935,
+      "text": "        \u001b[90mreject-empty-task.spec.ts — 3/3 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2936,
+      "text": "        \u001b[90mstats-page-shows-totals.spec.ts — 3/3 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2937,
+      "text": "        \u001b[90mnavigate-to-stats.spec.ts — 3/3 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2938,
+      "text": "        \u001b[90mabout-page-copy.spec.ts — 3/3 steps from templates\u001b[39m\n"
+    },
+    {
+      "t": 2938,
+      "text": "      \u001b[32m✓\u001b[39m 8 spec files, 26 steps — 100% deterministic (0 via LLM fallback)\n\n\u001b[36m[4/7]\u001b[39m \u001b[1mExecute\u001b[22m \u001b[2m— running the generated Playwright suite\u001b[22m\n"
+    },
+    {
+      "t": 34846,
+      "text": "      \u001b[32m✓\u001b[39m \u001b[32m4 passed\u001b[39m, \u001b[31m4 failed\u001b[39m in 31s\n\n\u001b[36m[5/7]\u001b[39m \u001b[1mTriage\u001b[22m \u001b[2m— Claude classifies every failure\u001b[22m\n"
+    },
+    {
+      "t": 35425,
+      "text": "      \u001b[2m·\u001b[22m \u001b[31mreal_bug\u001b[39m (91%) — Marking a task complete survives a page reload\n        \u001b[90mThe checkbox was found and checked successfully, but after page.reload() it read back unchecked. The completed state is never sent to the server, so it cannot survive a refresh. This is a persistence defect in the application, not a test problem.\u001b[39m\n"
+    },
+    {
+      "t": 35425,
+      "text": "      \u001b[2m·\u001b[22m \u001b[31mreal_bug\u001b[39m (94%) — Deleting a task removes the task that was clicked\n        \u001b[90mThe locator resolved fine and the count was read as 2 instead of the expected value, so the UI rendered — the app deleted a different task than the one clicked. Two tasks share the text 'Review pull request', which points at deletion matching on text rather than id.\u001b[39m\n"
+    },
+    {
+      "t": 35426,
+      "text": "      \u001b[2m·\u001b[22m \u001b[31mreal_bug\u001b[39m (88%) — Submitting an empty task is rejected\n        \u001b[90mSubmitting the form with an empty input increased the task count instead of leaving it unchanged, so the app accepted an empty task. Missing input validation on the add-task endpoint.\u001b[39m\n"
+    },
+    {
+      "t": 35426,
+      "text": "      \u001b[2m·\u001b[22m \u001b[33mflaky\u001b[39m (62%) — The stats page reports a total task count\n        \u001b[90mThe stats total disagreed with the seeded count because an earlier test in the same run mutated shared server state. The test would pass in isolation or after a reset, so this is test-ordering noise rather than an application defect.\u001b[39m\n"
+    },
+    {
+      "t": 35428,
+      "text": "      \u001b[32m✓\u001b[39m 3 real bug(s), 1 flaky, 0 selector drift, 0 environment\n\n\u001b[36m[6/7]\u001b[39m \u001b[1mFile bugs\u001b[22m \u001b[2m— real bugs only, with dedupe\u001b[22m\n"
+    },
+    {
+      "t": 37010,
+      "text": "      \u001b[2m·\u001b[22m \u001b[35mHIGH\u001b[39m  Marking a task complete survives a page reload\n"
+    },
+    {
+      "t": 37010,
+      "text": "      \u001b[2m·\u001b[22m \u001b[31mCRITICAL\u001b[39m  Deleting a task removes the task that was clicked\n"
+    },
+    {
+      "t": 37010,
+      "text": "      \u001b[2m·\u001b[22m \u001b[35mHIGH\u001b[39m  Submitting an empty task is rejected\n"
+    },
+    {
+      "t": 37011,
+      "text": "      \u001b[32m✓\u001b[39m 3 bug(s) filed — 3 new, 0 duplicate(s)\n\n\u001b[36m[7/7]\u001b[39m \u001b[1mReport\u001b[22m \u001b[2m— writing artifacts and evaluating the CI gate\u001b[22m\n"
+    },
+    {
+      "t": 37012,
+      "text": "      \u001b[32m✓\u001b[39m Artifacts written to data/runs/run-20260805-193253-rbf5\n"
+    },
+    {
+      "t": 37012,
+      "text": "\n"
+    },
+    {
+      "t": 37012,
+      "text": "      \u001b[2mTests         \u001b[22m  4/8 passed\n      \u001b[2mReal bugs     \u001b[22m  3\n"
+    },
+    {
+      "t": 37012,
+      "text": "      \u001b[2mNew bugs filed\u001b[22m  3\n      \u001b[2mAI calls      \u001b[22m  5 (mock — no spend)\n      \u001b[2mCI gate       \u001b[22m  \u001b[31mFAIL\u001b[39m\n        \u001b[90m3 new bug(s) at or above \"high\" severity\u001b[39m\n\n      Next: \u001b[36mnpm run dashboard\u001b[39m to view the report.\n\n"
+    }
+  ]
+}
