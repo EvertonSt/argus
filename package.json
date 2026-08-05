@@ -1,0 +1,41 @@
+{
+  "name": "argus",
+  "version": "1.0.0",
+  "description": "Autonomous AI QA agent: plans tests with Claude, executes them with Playwright, triages its own failures, and auto-files real bugs.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "argus": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "argus": "tsx src/cli/index.ts",
+    "run:mock": "tsx src/cli/index.ts run --mock",
+    "dashboard": "tsx src/cli/index.ts dashboard",
+    "triage-log": "tsx src/cli/index.ts triage-log",
+    "demo": "tsx demo-app/src/server.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "demo:drift": "tsx src/cli/drift-demo.ts --mock"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "playwright": "^1.49.0",
+    "string-similarity": "^4.0.4",
+    "systeminformation": "^5.23.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.0",
+    "@types/string-similarity": "^4.0.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "wait-on": "^9.1.0"
+  }
+}

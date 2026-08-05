@@ -1,0 +1,128 @@
+{
+  "source": "crawl",
+  "features": [
+    {
+      "id": "home-page",
+      "name": "Tasks",
+      "description": "The / screen. It contains a form posting to /tasks/add, a form posting to /tasks/delete, a button labelled \"Add task\", a button labelled \"Delete\", a checkbox \"Mark complete\", a text input \"What needs doing?\", a link \"Tasks\" to /, a link \"Stats\" to /stats, a link \"About\" to /about, a list of items (\"task-list\").",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "form",
+        "#[object HTMLInputElement]",
+        "[data-testid=\"add-task\"]",
+        "[data-testid=\"delete-task\"]",
+        "[data-testid=\"toggle-complete\"]",
+        "[data-testid=\"new-task-input\"]",
+        "[data-testid=\"nav-tasks\"]",
+        "[data-testid=\"nav-stats\"]",
+        "[data-testid=\"nav-about\"]",
+        "[data-testid=\"task-list\"]"
+      ]
+    },
+    {
+      "id": "home-form-add-task",
+      "name": "Add task",
+      "description": "Submitting the \"Add task\" form on /.",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "form"
+      ]
+    },
+    {
+      "id": "home-form-delete",
+      "name": "Delete",
+      "description": "Submitting the \"Delete\" form on /.",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "#[object HTMLInputElement]"
+      ]
+    },
+    {
+      "id": "home-button-add-task",
+      "name": "Add task",
+      "description": "Activating \"Add task\" on /.",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "[data-testid=\"add-task\"]"
+      ]
+    },
+    {
+      "id": "home-button-delete",
+      "name": "Delete",
+      "description": "Activating \"Delete\" on /.",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "[data-testid=\"delete-task\"]"
+      ]
+    },
+    {
+      "id": "home-checkbox-mark-complete",
+      "name": "Mark complete",
+      "description": "Toggling \"Mark complete\" on /.",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "[data-testid=\"toggle-complete\"]"
+      ]
+    },
+    {
+      "id": "home-input-what-needs-doing",
+      "name": "What needs doing?",
+      "description": "Activating \"What needs doing?\" on /.",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "[data-testid=\"new-task-input\"]"
+      ]
+    },
+    {
+      "id": "home-list-task-list",
+      "name": "task-list",
+      "description": "The \"task-list\" list rendered on /.",
+      "routes": [
+        "/"
+      ],
+      "keySelectors": [
+        "[data-testid=\"task-list\"]"
+      ]
+    },
+    {
+      "id": "stats-page",
+      "name": "Stats",
+      "description": "The /stats screen. It contains a link \"Tasks\" to /, a link \"Stats\" to /stats, a link \"About\" to /about.",
+      "routes": [
+        "/stats"
+      ],
+      "keySelectors": [
+        "[data-testid=\"nav-tasks\"]",
+        "[data-testid=\"nav-stats\"]",
+        "[data-testid=\"nav-about\"]"
+      ]
+    },
+    {
+      "id": "about-page",
+      "name": "About",
+      "description": "The /about screen. It contains a link \"Tasks\" to /, a link \"Stats\" to /stats, a link \"About\" to /about.",
+      "routes": [
+        "/about"
+      ],
+      "keySelectors": [
+        "[data-testid=\"nav-tasks\"]",
+        "[data-testid=\"nav-stats\"]",
+        "[data-testid=\"nav-about\"]"
+      ]
+    }
+  ]
+}

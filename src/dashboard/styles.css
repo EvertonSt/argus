@@ -1,0 +1,193 @@
+/* Argus dashboard — plain CSS, no build step, no framework. */
+
+:root {
+  --bg: #0d0f14;
+  --panel: #141822;
+  --panel-2: #1a1f2b;
+  --line: #242a38;
+  --text: #e8ebf2;
+  --muted: #8891a5;
+  --accent: #5b8cff;
+  --ok: #3ddc97;
+  --warn: #ffc857;
+  --danger: #ff6b6b;
+  --drift: #7c8cff;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hidden { display: none !important; }
+
+/* ---------- header ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #12161f 0%, var(--bg) 100%);
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+
+.brand h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
+.brand p { margin: 0; font-size: 13px; color: var(--muted); }
+
+.eye {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, var(--accent) 0 24%, #0d0f14 25% 46%, var(--accent) 47% 52%, transparent 53%);
+  box-shadow: 0 0 18px rgba(91, 140, 255, 0.45);
+}
+
+.run-meta { font-size: 13px; color: var(--muted); text-align: right; line-height: 1.5; }
+.run-meta strong { color: var(--text); font-weight: 600; }
+
+/* ---------- layout ---------- */
+
+main { max-width: 1180px; margin: 28px auto 48px; padding: 0 32px; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+}
+
+.panel h2 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.hint { margin: 0 0 18px; font-size: 13px; color: var(--muted); }
+.muted { color: var(--muted); }
+
+.grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 22px; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+.chart-wrap { position: relative; height: 260px; }
+
+/* ---------- summary cards ---------- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+
+.card .label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.7px;
+  color: var(--muted); margin-bottom: 8px;
+}
+.card .value { font-size: 26px; font-weight: 700; line-height: 1.1; }
+.card .sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+.value.ok { color: var(--ok); }
+.value.danger { color: var(--danger); }
+.value.warn { color: var(--warn); }
+.value.accent { color: var(--accent); }
+
+/* ---------- table ---------- */
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+th {
+  text-align: left; padding: 10px 12px;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--muted); border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--panel-2); }
+
+/* ---------- badges ---------- */
+
+.badge {
+  display: inline-block; padding: 3px 9px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-critical { background: rgba(255, 107, 107, 0.16); color: var(--danger); }
+.badge-high     { background: rgba(255, 140, 105, 0.16); color: #ff8c69; }
+.badge-medium   { background: rgba(255, 200, 87, 0.16);  color: var(--warn); }
+.badge-low      { background: rgba(136, 145, 165, 0.16); color: var(--muted); }
+
+.pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
+  vertical-align: middle; margin-left: 8px;
+}
+.pill-review { background: rgba(124, 140, 255, 0.16); color: var(--drift); }
+.pill-dup    { background: rgba(136, 145, 165, 0.16); color: var(--muted); }
+.pill-new    { background: rgba(61, 220, 151, 0.16);  color: var(--ok); }
+
+/* ---------- verdict rows ---------- */
+
+.verdict {
+  display: inline-block; padding: 3px 9px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.verdict-real_bug          { background: rgba(255, 107, 107, 0.16); color: var(--danger); }
+.verdict-flaky             { background: rgba(255, 200, 87, 0.16);  color: var(--warn); }
+.verdict-selector_drift    { background: rgba(124, 140, 255, 0.16); color: var(--drift); }
+.verdict-environment_issue { background: rgba(136, 145, 165, 0.16); color: var(--muted); }
+
+.triage-entry, .heal-entry {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.triage-entry:last-child, .heal-entry:last-child { border-bottom: none; }
+
+.triage-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.triage-title { font-weight: 600; }
+.confidence { font-size: 12px; color: var(--muted); }
+.reasoning { margin: 0; color: #c3cad9; font-size: 14px; }
+.error-line {
+  margin: 8px 0 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px; color: var(--muted); word-break: break-word;
+}
+
+.fix {
+  margin-top: 10px; padding: 12px 14px;
+  background: var(--panel-2); border-left: 3px solid var(--drift); border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px;
+  color: #cdd5e6; word-break: break-word;
+}
+
+/* ---------- misc ---------- */
+
+.empty { text-align: center; padding: 46px 24px; }
+.empty h2 { font-size: 18px; }
+.empty pre {
+  display: inline-block; margin: 14px 0 8px; padding: 12px 18px;
+  background: #0a0c11; border: 1px solid var(--line); border-radius: 8px;
+}
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+.empty-row { color: var(--muted); font-size: 14px; padding: 6px 0 0; }
+
+footer {
+  border-top: 1px solid var(--line);
+  padding: 18px 32px; text-align: center;
+  color: var(--muted); font-size: 13px;
+}
+footer p { margin: 0; }
