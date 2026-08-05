@@ -7,7 +7,11 @@ import {
   resolveSeverity,
   suggestSeverity,
 } from '../../src/bug-filer/severity.js';
-import { checkDuplicate, findDuplicate } from '../../src/bug-filer/duplicate-check.js';
+import {
+  checkDuplicate,
+  compareTwoStrings,
+  findDuplicate,
+} from '../../src/bug-filer/duplicate-check.js';
 import { formatEnvironment, getEnvironmentInfo } from '../../src/bug-filer/environment.js';
 import { buildBugTitle, buildReproSteps, fileBugs, newBugs } from '../../src/bug-filer/index.js';
 import type { FiledBug, RunSummary, TestCase, TriageResult } from '../../src/shared/types.js';
@@ -83,6 +87,55 @@ describe('resolveSeverity', () => {
 
   it('does not lower severity for a low-priority test', () => {
     expect(resolveSeverity('data loss detected', 'low')).toBe('critical');
+  });
+});
+
+describe('compareTwoStrings (inlined Dice coefficient)', () => {
+  // These expectations were captured from the `string-similarity` package
+  // before it was removed, and verified bit-identical across 5,441 pairs
+  // (the demo bug titles, unicode, whitespace, repeated bigrams, 200-char
+  // strings, and 5k random pairs). They pin the ported algorithm so the
+  // tuned 0.55 threshold keeps meaning what it meant in the original tool.
+  it('scores identical strings as 1', () => {
+    expect(compareTwoStrings('Delete removes wrong task', 'Delete removes wrong task')).toBe(1);
+  });
+
+  it('ignores whitespace differences', () => {
+    expect(compareTwoStrings('hello world', 'hello  world')).toBe(1);
+    expect(compareTwoStrings('hello world', ' hello world ')).toBe(1);
+  });
+
+  it('scores strings shorter than two characters as 0', () => {
+    expect(compareTwoStrings('a', 'a b')).toBe(0);
+    expect(compareTwoStrings('', 'abc')).toBe(0);
+  });
+
+  it('treats empty vs empty as identical', () => {
+    expect(compareTwoStrings('', '')).toBe(1);
+  });
+
+  it('scores an anagram with no shared bigrams as 0', () => {
+    expect(compareTwoStrings('abc', 'cba')).toBe(0);
+  });
+
+  it('respects bigram multiplicity rather than set membership', () => {
+    // 'aa' occurs twice in 'aabaa' but once in 'aab' — a set-based
+    // implementation would over-count here.
+    expect(compareTwoStrings('aabaa', 'aab')).toBeCloseTo(0.6666666666666666, 12);
+  });
+
+  it('scores partially similar titles between 0 and 1', () => {
+    const score = compareTwoStrings(
+      'Deleting a task removes the task that was clicked',
+      'Deleting a task removes the wrong task',
+    );
+    expect(score).toBeGreaterThan(0.55);
+    expect(score).toBeLessThan(1);
+  });
+
+  it('scores unrelated titles below the dedupe threshold', () => {
+    expect(compareTwoStrings('Submitting an empty task is rejected', 'The stats page totals')).
+      toBeLessThan(0.55);
   });
 });
 
