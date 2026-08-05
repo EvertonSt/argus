@@ -189,7 +189,7 @@ Self-healing suggestions are surfaced for review and **never auto-applied**. A t
 ## Testing
 
 ```bash
-npm test        # 252 tests, no API key required, no network calls
+npm test        # 255 tests, no API key required, no network calls
 npm run typecheck
 ```
 
@@ -204,7 +204,7 @@ Deterministic modules are unit-tested directly. The two AI modules are tested ag
 | Triage | 30 | All four verdicts, malformed responses |
 | Bug filer | 50 | Severity, dedupe, environment, regressions |
 | Dashboard | 17 | Zero-build guarantees, graceful degradation |
-| CI report | 33 | Comment rendering, gate rules, workflow wiring |
+| CI report | 36 | Comment rendering, gate rules, workflow wiring |
 
 Dedupe's Dice coefficient is implemented in-tree rather than pulled from the deprecated `string-similarity` package, and was verified bit-identical to it across 5,441 comparisons before that dependency was dropped. A clean `npm install` produces no deprecation warnings from Argus's own dependencies, and `npm audit` reports zero vulnerabilities.
 
