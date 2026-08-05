@@ -59,7 +59,10 @@ jobs:
       - name: Start the demo app
         run: |
           npm run demo &
-          npx wait-on http://localhost:4317 --timeout 60000
+          # Target 127.0.0.1, not localhost: on Ubuntu runners `localhost` can
+          # resolve to ::1 first and wait-on will sit there until it times out.
+          npx wait-on tcp:127.0.0.1:4317 --timeout 60000
+          curl -fsS http://127.0.0.1:4317/ > /dev/null && echo "Demo app responding."
 
       # Without a key, fall back to mock mode so forks and Dependabot PRs still
       # get a working run instead of a red X they cannot fix.
@@ -85,7 +88,21 @@ jobs:
 
       - name: Build the PR comment
         if: always()
-        run: npm run argus -- ci-comment --out argus-comment.md
+        # `argus ci-comment` needs a completed run to read. If the pipeline
+        # died before writing one, emit a plain failure notice instead — the
+        # comment step must never be the thing that breaks the build, or the
+        # real error gets buried under an ENOENT.
+        run: |
+          if npm run --silent argus -- ci-comment --out argus-comment.md; then
+            echo "Comment rendered from the run artifact."
+          else
+            {
+              echo "### 💥 Argus did not complete"
+              echo
+              echo "The pipeline failed before it could produce a run artifact, so there"
+              echo "is no triage summary to report. See the job log for the failing step."
+            } > argus-comment.md
+          fi
 
       - name: Add to job summary
         if: always()
