@@ -178,7 +178,7 @@ Self-healing suggestions are surfaced for review and **never auto-applied**. A t
 
 **The CI gate is severity-based, not pass/fail.** Flaky and selector-drift failures are reported and never block. Only a *new* real bug at or above `ARGUS_SEVERITY_FAIL_THRESHOLD` fails the build. This targets the specific reason teams abandon automated QA gates: unrelated PRs blocked by noise.
 
-**Ported, not rewritten.** Severity scoring and duplicate detection come from my [Bug Report Generator](https://github.com/EvertonSt); planning prompts from my [AI Test Case Generator](https://github.com/EvertonSt). Their tuned heuristics carried over intact — the only change is that input now arrives from triage instead of a CLI prompt.
+**Ported, not rewritten.** Severity scoring and duplicate detection come from my [Bug Report Generator](https://github.com/EvertonSt); planning prompts from my [AI Test Case Generator](https://github.com/EvertonSt). Their tuned heuristics carried over intact — the only changes are that input now arrives from triage instead of a CLI prompt, and the deprecated similarity dependency was inlined (proven equivalent first, so the tuned 0.55 threshold still means exactly what it meant).
 
 **Everything is inspectable JSON.** `data/` holds the feature inventory, planned cases, run history, triage log, and filed bugs as pretty-printed JSON. No database. For a portfolio project, being able to open the artifacts matters more than scale.
 
@@ -189,7 +189,7 @@ Self-healing suggestions are surfaced for review and **never auto-applied**. A t
 ## Testing
 
 ```bash
-npm test        # 241 tests, no API key required, no network calls
+npm test        # 252 tests, no API key required, no network calls
 npm run typecheck
 ```
 
@@ -202,9 +202,11 @@ Deterministic modules are unit-tested directly. The two AI modules are tested ag
 | Codegen | 50 | Every template rule, LLM fallback, sanitisation |
 | Execution | 18 | Report parsing against a real recorded run |
 | Triage | 30 | All four verdicts, malformed responses |
-| Bug filer | 42 | Severity, dedupe, environment, regressions |
+| Bug filer | 50 | Severity, dedupe, environment, regressions |
 | Dashboard | 17 | Zero-build guarantees, graceful degradation |
-| CI report | 30 | Comment rendering, gate rules, workflow wiring |
+| CI report | 33 | Comment rendering, gate rules, workflow wiring |
+
+Dedupe's Dice coefficient is implemented in-tree rather than pulled from the deprecated `string-similarity` package, and was verified bit-identical to it across 5,441 comparisons before that dependency was dropped. A clean `npm install` produces no deprecation warnings from Argus's own dependencies, and `npm audit` reports zero vulnerabilities.
 
 ---
 
