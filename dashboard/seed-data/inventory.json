@@ -1,0 +1,37 @@
+{
+  "source": "crawl",
+  "features": [
+    {
+      "id": "f1",
+      "name": "Add task",
+      "description": "User can add a new task",
+      "routes": [
+        "/"
+      ]
+    },
+    {
+      "id": "f2",
+      "name": "Delete task",
+      "description": "User can delete tasks",
+      "routes": [
+        "/"
+      ]
+    },
+    {
+      "id": "f3",
+      "name": "Toggle complete",
+      "description": "User can mark tasks complete",
+      "routes": [
+        "/"
+      ]
+    },
+    {
+      "id": "f4",
+      "name": "Empty input guard",
+      "description": "Form rejects empty submissions",
+      "routes": [
+        "/"
+      ]
+    }
+  ]
+}

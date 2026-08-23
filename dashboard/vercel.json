@@ -1,19 +1,4 @@
 {
   "version": 2,
-  "name": "argus-dashboard",
-  "builds": [
-    {
-      "src": "next.config.js",
-      "use": "next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "headers": {
-        "Cache-Control": "s-maxage=0, stale-while-revalidate=3600"
-      },
-      "continue": true
-    }
-  ]
+  "name": "argus-dashboard"
 }

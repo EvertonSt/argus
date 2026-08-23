@@ -1,0 +1,29 @@
+[
+  {
+    "id": "BUG-1",
+    "testCaseId": "tc-2",
+    "title": "Delete removes wrong task",
+    "severity": "high",
+    "environment": "macOS, Chrome 126",
+    "reproSteps": [
+      "Click delete on task A",
+      "Task B disappears"
+    ],
+    "filedAt": "2025-01-15T10:30:00Z",
+    "runId": "run-mock-001"
+  },
+  {
+    "id": "BUG-2",
+    "testCaseId": "tc-3",
+    "title": "Mark complete doesn't survive refresh",
+    "severity": "critical",
+    "environment": "macOS, Chrome 126",
+    "reproSteps": [
+      "Mark task complete",
+      "Refresh page",
+      "Task reverts"
+    ],
+    "filedAt": "2025-01-15T10:30:00Z",
+    "runId": "run-mock-001"
+  }
+]

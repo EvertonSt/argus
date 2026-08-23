@@ -1,0 +1,19 @@
+[
+  {
+    "runId": "run-mock-001",
+    "timestamp": "2025-01-15T10:30:00Z",
+    "mode": "mock",
+    "provider": "mock",
+    "target": "http://localhost:4317",
+    "env": "test",
+    "total": 4,
+    "passed": 1,
+    "failed": 3,
+    "realBugs": 3,
+    "flaky": 0,
+    "selectorDrift": 0,
+    "environmentIssue": 1,
+    "gateFailed": true,
+    "aiCalls": 5
+  }
+]

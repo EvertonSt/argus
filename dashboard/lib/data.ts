@@ -9,7 +9,14 @@ const CWD = process.cwd();
 export const ROOT = CWD;
 const DASHBOARD_DATA = path.join(CWD, 'data');
 const REPO_DATA = path.join(CWD, '..', 'data');
-export const DATA_DIR = fs.existsSync(DASHBOARD_DATA) ? DASHBOARD_DATA : (fs.existsSync(REPO_DATA) ? REPO_DATA : DASHBOARD_DATA);
+// Committed fallback so the static export still has content on Vercel, where
+// runtime data/ is gitignored and absent at build time.
+const SEED_DATA = path.join(CWD, 'seed-data');
+export const DATA_DIR = fs.existsSync(DASHBOARD_DATA)
+  ? DASHBOARD_DATA
+  : fs.existsSync(REPO_DATA)
+    ? REPO_DATA
+    : SEED_DATA;
 export const RUNS_DIR = path.join(DATA_DIR, 'runs');
 
 interface LoadedState {
