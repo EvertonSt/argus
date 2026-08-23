@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #0d0f14;
+    --panel: #141822;
+    --panel-2: #1a1f2b;
+    --line: #242a38;
+    --text: #e8ebf2;
+    --muted: #8891a5;
+    --accent: #5b8cff;
+    --ok: #3ddc97;
+    --warn: #ffc857;
+    --danger: #ff6b6b;
+    --drift: #7c8cff;
+  }
+  body { @apply bg-bg text-text font-sans; }
+}

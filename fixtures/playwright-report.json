@@ -1,0 +1,653 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Users\\Everton\\AppData\\Local\\hermes\\node\\node.exe",
+      "C:\\Users\\Everton\\portfolio-projects\\argus\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\Users\\Everton\\portfolio-projects\\argus\\playwright.config.ts",
+    "rootDir": "C:/Users/Everton/portfolio-projects/argus/generated-tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Everton/portfolio-projects/argus/data/runs/run-manual-test/artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/Everton/portfolio-projects/argus/generated-tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 20000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "data\\runs\\run-manual-test\\playwright-report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.62.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "about-page-copy.spec.ts",
+      "file": "about-page-copy.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[low] The about page explains what Tasker is",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "about-page-copy"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 649,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:21.499Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "about-page-copy"
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "06b3c39d7288a428f4e9-f20bdbf754802e6ee9d8",
+          "file": "about-page-copy.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "add-task-happy-path.spec.ts",
+      "file": "add-task-happy-path.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[critical] Adding a task appends it to the task list",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "add-task-happy-path"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 310,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:22.322Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "add-task-happy-path"
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "78b3d7c858100714a1f6-f6c9686bff4d757aa573",
+          "file": "add-task-happy-path.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "complete-persists-after-reload.spec.ts",
+      "file": "complete-persists-after-reload.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[high] Marking a task complete survives a page reload",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "complete-persists-after-reload"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5336,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeChecked\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"toggle-complete\"]').first()\nExpected: checked\nReceived: unchecked\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeChecked\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"toggle-complete\"]').first()\u001b[22m\n\u001b[2m    14 × locator resolved to <input type=\"checkbox\" data-task-id=\"t1\" aria-label=\"Mark complete\" data-testid=\"toggle-complete\"/>\u001b[22m\n\u001b[2m       - unexpected value \"unchecked\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeChecked\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"toggle-complete\"]').first()\nExpected: checked\nReceived: unchecked\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeChecked\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"toggle-complete\"]').first()\u001b[22m\n\u001b[2m    14 × locator resolved to <input type=\"checkbox\" data-task-id=\"t1\" aria-label=\"Mark complete\" data-testid=\"toggle-complete\"/>\u001b[22m\n\u001b[2m       - unexpected value \"unchecked\"\u001b[22m\n\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\complete-persists-after-reload.spec.ts:32:73",
+                    "location": {
+                      "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\complete-persists-after-reload.spec.ts",
+                      "column": 73,
+                      "line": 32
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 30 |\u001b[39m\n \u001b[90m 31 |\u001b[39m   \u001b[90m// the first element matching \"[data-testid=\\\"toggle-complete\\\"]\" should be checked\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"toggle-complete\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeChecked()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 34 |\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\complete-persists-after-reload.spec.ts",
+                        "column": 73,
+                        "line": 32
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeChecked\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"toggle-complete\"]').first()\nExpected: checked\nReceived: unchecked\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeChecked\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"toggle-complete\"]').first()\u001b[22m\n\u001b[2m    14 × locator resolved to <input type=\"checkbox\" data-task-id=\"t1\" aria-label=\"Mark complete\" data-testid=\"toggle-complete\"/>\u001b[22m\n\u001b[2m       - unexpected value \"unchecked\"\u001b[22m\n\n\n  30 |\n  31 |   // the first element matching \"[data-testid=\\\"toggle-complete\\\"]\" should be checked\n> 32 |   await expect(page.locator('[data-testid=\"toggle-complete\"]').first()).toBeChecked();\n     |                                                                         ^\n  33 | });\n  34 |\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\complete-persists-after-reload.spec.ts:32:73"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:22.652Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "complete-persists-after-reload"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\complete-persists-after-re-8fb42-lete-survives-a-page-reload-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\complete-persists-after-re-8fb42-lete-survives-a-page-reload-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\complete-persists-after-re-8fb42-lete-survives-a-page-reload-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\complete-persists-after-reload.spec.ts",
+                    "column": 73,
+                    "line": 32
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "e0ee8045b841dc6336a8-3e05b627e3d7221b8669",
+          "file": "complete-persists-after-reload.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "delete-removes-clicked-task.spec.ts",
+      "file": "delete-removes-clicked-task.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[critical] Deleting a task removes the task that was clicked",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "delete-removes-clicked-task"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5512,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"task-item\"]')\nExpected: \u001b[32m2\u001b[39m\nReceived: \u001b[31m3\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"task-item\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to 3 elements\u001b[22m\n\u001b[2m       - unexpected value \"3\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"task-item\"]')\nExpected: \u001b[32m2\u001b[39m\nReceived: \u001b[31m3\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"task-item\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to 3 elements\u001b[22m\n\u001b[2m       - unexpected value \"3\"\u001b[22m\n\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\delete-removes-clicked-task.spec.ts:29:59",
+                    "location": {
+                      "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\delete-removes-clicked-task.spec.ts",
+                      "column": 59,
+                      "line": 29
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 27 |\u001b[39m\n \u001b[90m 28 |\u001b[39m   \u001b[90m// the element \"[data-testid=\\\"task-item\\\"]\" should have count 2\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"task-item\"]'\u001b[39m))\u001b[33m.\u001b[39mtoHaveCount(\u001b[35m2\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 |\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\delete-removes-clicked-task.spec.ts",
+                        "column": 59,
+                        "line": 29
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"task-item\"]')\nExpected: \u001b[32m2\u001b[39m\nReceived: \u001b[31m3\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"task-item\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to 3 elements\u001b[22m\n\u001b[2m       - unexpected value \"3\"\u001b[22m\n\n\n  27 |\n  28 |   // the element \"[data-testid=\\\"task-item\\\"]\" should have count 2\n> 29 |   await expect(page.locator('[data-testid=\"task-item\"]')).toHaveCount(2);\n     |                                                           ^\n  30 | });\n  31 |\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\delete-removes-clicked-task.spec.ts:29:59"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:28.548Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "delete-removes-clicked-task"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\delete-removes-clicked-tas-77772-s-the-task-that-was-clicked-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\delete-removes-clicked-tas-77772-s-the-task-that-was-clicked-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\delete-removes-clicked-tas-77772-s-the-task-that-was-clicked-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\delete-removes-clicked-task.spec.ts",
+                    "column": 59,
+                    "line": 29
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "01b504c964979e5638ca-568cc1f5d4c74c52a692",
+          "file": "delete-removes-clicked-task.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "navigate-to-stats.spec.ts",
+      "file": "navigate-to-stats.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[medium] The Stats nav link opens the stats screen",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "navigate-to-stats"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 326,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:34.851Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "navigate-to-stats"
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "67c54edd866452adf78a-7282f5921fead3befbb7",
+          "file": "navigate-to-stats.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "reject-empty-task.spec.ts",
+      "file": "reject-empty-task.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[medium] Submitting an empty task is rejected",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "reject-empty-task"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5293,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"task-item\"]')\nExpected: \u001b[32m3\u001b[39m\nReceived: \u001b[31m4\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"task-item\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to 4 elements\u001b[22m\n\u001b[2m       - unexpected value \"4\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"task-item\"]')\nExpected: \u001b[32m3\u001b[39m\nReceived: \u001b[31m4\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"task-item\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to 4 elements\u001b[22m\n\u001b[2m       - unexpected value \"4\"\u001b[22m\n\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\reject-empty-task.spec.ts:29:59",
+                    "location": {
+                      "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\reject-empty-task.spec.ts",
+                      "column": 59,
+                      "line": 29
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 27 |\u001b[39m\n \u001b[90m 28 |\u001b[39m   \u001b[90m// the element \"[data-testid=\\\"task-item\\\"]\" should have count 3\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"task-item\"]'\u001b[39m))\u001b[33m.\u001b[39mtoHaveCount(\u001b[35m3\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 |\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\reject-empty-task.spec.ts",
+                        "column": 59,
+                        "line": 29
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"task-item\"]')\nExpected: \u001b[32m3\u001b[39m\nReceived: \u001b[31m4\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"task-item\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to 4 elements\u001b[22m\n\u001b[2m       - unexpected value \"4\"\u001b[22m\n\n\n  27 |\n  28 |   // the element \"[data-testid=\\\"task-item\\\"]\" should have count 3\n> 29 |   await expect(page.locator('[data-testid=\"task-item\"]')).toHaveCount(3);\n     |                                                           ^\n  30 | });\n  31 |\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\reject-empty-task.spec.ts:29:59"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:35.314Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "reject-empty-task"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\reject-empty-task--medium--2b59e-g-an-empty-task-is-rejected-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\reject-empty-task--medium--2b59e-g-an-empty-task-is-rejected-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\reject-empty-task--medium--2b59e-g-an-empty-task-is-rejected-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\reject-empty-task.spec.ts",
+                    "column": 59,
+                    "line": 29
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "8f1e64c0ea1e1f39c868-ba2fb97fea0ada7a2c56",
+          "file": "reject-empty-task.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "stats-page-shows-totals.spec.ts",
+      "file": "stats-page-shows-totals.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[medium] The stats page reports a total task count",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "stats-page-shows-totals"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5270,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"stat-total\"]')\nExpected: \u001b[32m\"3\"\u001b[39m\nReceived: \u001b[31m\"4\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"stat-total\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to <b data-testid=\"stat-total\">4</b>\u001b[22m\n\u001b[2m       - unexpected value \"4\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"stat-total\"]')\nExpected: \u001b[32m\"3\"\u001b[39m\nReceived: \u001b[31m\"4\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"stat-total\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to <b data-testid=\"stat-total\">4</b>\u001b[22m\n\u001b[2m       - unexpected value \"4\"\u001b[22m\n\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\stats-page-shows-totals.spec.ts:29:60",
+                    "location": {
+                      "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\stats-page-shows-totals.spec.ts",
+                      "column": 60,
+                      "line": 29
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 27 |\u001b[39m\n \u001b[90m 28 |\u001b[39m   \u001b[90m// the element \"[data-testid=\\\"stat-total\\\"]\" should have text \"3\"\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"stat-total\"]'\u001b[39m))\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'3'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                            \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 |\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\stats-page-shows-totals.spec.ts",
+                        "column": 60,
+                        "line": 29
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-testid=\"stat-total\"]')\nExpected: \u001b[32m\"3\"\u001b[39m\nReceived: \u001b[31m\"4\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-testid=\"stat-total\"]')\u001b[22m\n\u001b[2m    14 × locator resolved to <b data-testid=\"stat-total\">4</b>\u001b[22m\n\u001b[2m       - unexpected value \"4\"\u001b[22m\n\n\n  27 |\n  28 |   // the element \"[data-testid=\\\"stat-total\\\"]\" should have text \"3\"\n> 29 |   await expect(page.locator('[data-testid=\"stat-total\"]')).toHaveText('3');\n     |                                                            ^\n  30 | });\n  31 |\n    at C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\stats-page-shows-totals.spec.ts:29:60"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:41.120Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "stats-page-shows-totals"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\stats-page-shows-totals--m-f7123--reports-a-total-task-count-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\stats-page-shows-totals--m-f7123--reports-a-total-task-count-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\Everton\\portfolio-projects\\argus\\data\\runs\\run-manual-test\\artifacts\\stats-page-shows-totals--m-f7123--reports-a-total-task-count-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Everton\\portfolio-projects\\argus\\generated-tests\\stats-page-shows-totals.spec.ts",
+                    "column": 60,
+                    "line": 29
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "3556c9b3af214088fd1d-dbb4b3697be0110c04ad",
+          "file": "stats-page-shows-totals.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "task-list-renders.spec.ts",
+      "file": "task-list-renders.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[high] The task list renders the seeded tasks",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [
+                {
+                  "type": "argus-test-case-id",
+                  "description": "task-list-renders"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 414,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-08-05T21:09:47.171Z",
+                  "annotations": [
+                    {
+                      "type": "argus-test-case-id",
+                      "description": "task-list-renders"
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e6ec1e85149fd263ea02-adb4c343bba162085430",
+          "file": "task-list-renders.spec.ts",
+          "line": 15,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-08-05T21:09:20.844Z",
+    "duration": 27128.056999999997,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 4,
+    "flaky": 0
+  }
+}

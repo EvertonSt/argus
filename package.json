@@ -1,0 +1,57 @@
+{
+  "name": "argus",
+  "version": "1.0.0",
+  "description": "Autonomous AI QA agent: plans tests with Claude, executes them with Playwright, triages its own failures, and auto-files real bugs.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "argus": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "argus": "npx tsx src/cli/index.ts",
+    "run:mock": "npx tsx src/cli/index.ts run --mock",
+    "dashboard": "npx tsx src/cli/index.ts dashboard",
+    "triage-log": "npx tsx src/cli/index.ts triage-log",
+    "demo": "tsx demo-app/src/server.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "demo:drift": "npx tsx src/cli/index.ts drift-demo",
+    "demo:capture": "tsx scripts/capture-run.ts docs/run-capture.json",
+    "demo:gif": "python scripts/render_demo_gif.py",
+    "run": "npx tsx src/cli/index.ts run",
+    "dashboard:build": "cd dashboard && npm run build",
+    "dashboard:dev": "cd dashboard && npm run dev",
+    "ci-comment": "npx tsx src/cli/index.ts ci-comment",
+    "lint": "eslint src/ test/",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "dashboard:deploy": "cd dashboard && npx vercel --prod",
+    "dashboard:export": "cd dashboard && npx next export",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "playwright": "^1.49.0",
+    "systeminformation": "^5.23.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.8",
+    "wait-on": "^9.1.0",
+    "eslint": "^9.14.0",
+    "prettier": "^3.3.3",
+    "@eslint/js": "^9.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
+    "@typescript-eslint/parser": "^8.11.0",
+    "typescript-eslint": "^8.11.0",
+    "globals": "^16.0.0"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "verdict": "selector_drift",
+  "confidence": 0.79,
+  "reasoning": "The locator matched zero elements while the surrounding page rendered normally, which indicates the test's selector is stale rather than the feature being broken.",
+  "suggestedFix": "Update the locator to page.getByRole('button', { name: 'Create task' }) \u2014 the button label appears to have been renamed from 'Add task'."
+}

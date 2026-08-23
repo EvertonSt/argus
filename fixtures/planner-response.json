@@ -1,0 +1,98 @@
+[
+  {
+    "id": "add-task-happy-path",
+    "featureId": "home-form-add-task",
+    "title": "Adding a task appends it to the task list",
+    "priority": "critical",
+    "gherkin": {
+      "given": "I am on the tasks page",
+      "when": "I fill in \"[data-testid=\\\"new-task-input\\\"]\" with \"Ship the release\" and click the button labelled \"Add task\"",
+      "then": "I should see \"Ship the release\""
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "delete-removes-clicked-task",
+    "featureId": "home-button-delete",
+    "title": "Deleting a task removes the task that was clicked",
+    "priority": "critical",
+    "gherkin": {
+      "given": "I am on the tasks page with two tasks sharing the text \"Review pull request\"",
+      "when": "I click the last element matching \"[data-testid=\\\"delete-task\\\"]\"",
+      "then": "the element \"[data-testid=\\\"task-item\\\"]\" should have count 2"
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "complete-persists-after-reload",
+    "featureId": "home-checkbox-mark-complete",
+    "title": "Marking a task complete survives a page reload",
+    "priority": "high",
+    "gherkin": {
+      "given": "I am on the tasks page",
+      "when": "I check the first element matching \"[data-testid=\\\"toggle-complete\\\"]\" and reload the page",
+      "then": "the first element matching \"[data-testid=\\\"toggle-complete\\\"]\" should be checked"
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "reject-empty-task",
+    "featureId": "home-form-add-task",
+    "title": "Submitting an empty task is rejected",
+    "priority": "medium",
+    "gherkin": {
+      "given": "I am on the tasks page",
+      "when": "I click the button labelled \"Add task\" without entering any text",
+      "then": "the element \"[data-testid=\\\"task-item\\\"]\" should have count 3"
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "task-list-renders",
+    "featureId": "home-list-task-list",
+    "title": "The task list renders the seeded tasks",
+    "priority": "high",
+    "gherkin": {
+      "given": "I am on the tasks page",
+      "when": "the page has loaded",
+      "then": "I should see \"Write release notes\""
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "stats-page-shows-totals",
+    "featureId": "stats-page",
+    "title": "The stats page reports a total task count",
+    "priority": "medium",
+    "gherkin": {
+      "given": "I am on the stats page",
+      "when": "the page has loaded",
+      "then": "the element \"[data-testid=\\\"stat-total\\\"]\" should have text \"3\""
+    },
+    "targetRoute": "/stats"
+  },
+  {
+    "id": "about-page-copy",
+    "featureId": "about-page",
+    "title": "The about page explains what Tasker is",
+    "priority": "low",
+    "gherkin": {
+      "given": "I am on the about page",
+      "when": "the page has loaded",
+      "then": "I should see \"Tasker is a small task tracker\""
+    },
+    "targetRoute": "/about"
+  },
+  {
+    "id": "navigate-to-stats",
+    "featureId": "home-page",
+    "title": "The Stats nav link opens the stats screen",
+    "priority": "medium",
+    "gherkin": {
+      "given": "I am on the tasks page",
+      "when": "I click the link labelled \"Stats\"",
+      "then": "the element \"[data-testid=\\\"stat-total\\\"]\" should be visible"
+    },
+    "targetRoute": "/"
+  }
+]

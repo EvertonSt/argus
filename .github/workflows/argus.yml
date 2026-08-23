@@ -1,0 +1,164 @@
+name: Argus QA
+
+# Runs the full Argus loop against the bundled demo app on every pull request,
+# then posts the result as a PR comment.
+#
+# The gate is deliberately severity-based, not pass/fail based: flaky tests and
+# stale selectors are reported but never block a merge. Only a *new* bug that
+# triage classified as a real bug, at or above ARGUS_SEVERITY_FAIL_THRESHOLD,
+# fails the build. This is the whole point — a QA gate nobody trusts gets
+# ignored, and the usual reason nobody trusts one is flaky tests blocking
+# unrelated PRs.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Needed to post the PR comment.
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: argus-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    name: Plan, run, triage, file
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      ARGUS_TARGET: http://localhost:4317
+      ARGUS_CI_THRESHOLD: ${{ vars.ARGUS_CI_THRESHOLD || 'high' }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ARGUS_ANTHROPIC_MODEL: ${{ vars.ARGUS_ANTHROPIC_MODEL || 'claude-sonnet-4-20250514' }}
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        # These never call the Anthropic API — they run against fixtures.
+        run: npm test
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Start the demo app
+        run: |
+          npm run demo &
+          # Target 127.0.0.1, not localhost: on Ubuntu runners `localhost` can
+          # resolve to ::1 first and wait-on will sit there until it times out.
+          npx wait-on tcp:127.0.0.1:4317 --timeout 60000
+          curl -fsS http://127.0.0.1:4317/ > /dev/null && echo "Demo app responding."
+
+      # Without a key, fall back to mock mode so forks and Dependabot PRs still
+      # get a working run instead of a red X they cannot fix.
+      - name: Decide run mode
+        id: mode
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "flag=" >> "$GITHUB_OUTPUT"
+            echo "label=live" >> "$GITHUB_OUTPUT"
+          else
+            echo "flag=--mock" >> "$GITHUB_OUTPUT"
+            echo "label=mock (no ANTHROPIC_API_KEY available)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Argus
+        id: argus
+        # Do not fail the step here: the gate's exit code is evaluated after the
+        # comment is posted, so reviewers always get the report.
+        continue-on-error: true
+        run: |
+          echo "Run mode: ${{ steps.mode.outputs.label }}"
+          npm run argus -- run ${{ steps.mode.outputs.flag }}
+
+      - name: Build the PR comment
+        if: always()
+        # `argus ci-comment` needs a completed run to read. If the pipeline
+        # died before writing one, emit a plain failure notice instead — the
+        # comment step must never be the thing that breaks the build, or the
+        # real error gets buried under an ENOENT.
+        run: |
+          if npm run --silent argus -- ci-comment --out argus-comment.md; then
+            echo "Comment rendered from the run artifact."
+          else
+            {
+              echo "### 💥 Argus did not complete"
+              echo
+              echo "The pipeline failed before it could produce a run artifact, so there"
+              echo "is no triage summary to report. See the job log for the failing step."
+            } > argus-comment.md
+          fi
+
+      - name: Add to job summary
+        if: always()
+        run: cat argus-comment.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Post the PR comment
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('argus-comment.md', 'utf8');
+            const marker = '<!-- argus-report -->';
+
+            // Update the existing comment rather than stacking a new one on
+            // every push — a long PR should not accumulate twenty reports.
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(
+              (c) => c.user.type === 'Bot' && c.body.includes(marker)
+            );
+
+            const payload = `${marker}\n${body}`;
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: payload,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: payload,
+              });
+            }
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: argus-run
+          path: |
+            data/
+            generated-tests/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Enforce the severity gate
+        # Exit code 1 from `argus run` means a new real bug met the threshold.
+        if: steps.argus.outcome == 'failure'
+        run: |
+          echo "::error::Argus found a new real bug at or above the '$ARGUS_SEVERITY_FAIL_THRESHOLD' severity threshold. See the PR comment for details."
+          exit 1
