@@ -7,7 +7,7 @@
 [![Tests](https://img.shields.io/badge/Tests-313%20passing-4ade81?style=flat-square)](https://github.com/EvertonSt/argus/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6%2B-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
-[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat-square&logo=vercel)](https://argus-dashboard.vercel.app)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat-square&logo=vercel)](https://argus-dashboard-n28z9hemv-everton-qa.vercel.app)
 [![CI Gate](https://img.shields.io/badge/CI%20Gate-Deterministic-4ade81?style=flat-square)](https://github.com/EvertonSt/cerberus-ci)
 
 > **Argus is the generation + triage half of the autonomous QA loop.** It crawls your app, plans a test suite, generates 100% deterministic Playwright tests, detects real bugs vs. flaky noise, files GitHub issues with severity, and ships a dashboard. No API key required to try it.
@@ -95,6 +95,16 @@ npx argus run --target http://localhost:3000
 npm run dashboard
 ```
 
+### Deploy the dashboard to Vercel
+
+The repo is a monorepo. When Vercel detects it, **import the `dashboard` directory — not `demo-app`** (`demo-app` is Tasker, a deliberately-buggy QA target). The dashboard is a static Next.js export that bakes in a committed `dashboard/seed-data/` snapshot, so it serves real content out of the box.
+
+```bash
+npm run dashboard:deploy   # cd dashboard && npx vercel --prod --scope everton-qa
+```
+
+Live: https://argus-dashboard-n28z9hemv-everton-qa.vercel.app
+
 ---
 
 ## Configuration
@@ -129,7 +139,7 @@ argus/
 │   └── bug-filer/        # GitHub Issues filing + dedupe
 ├── dashboard/            # Next.js 15 + Tailwind dashboard (Vercel-deployable)
 ├── src/dashboard/        # Static chart.js dashboard served by `argus dashboard`
-├── demo-app/             # Demo app with 3 real + 1 flaky test
+├── demo-app/             # Tasker — deliberately-imperfect test target (3 intentional bugs; do NOT deploy)
 ├── test/                 # 313 tests (all fixture-based, no API key needed)
 └── docs/                 # Docs assets + interview talking points
 ```
@@ -170,4 +180,4 @@ MIT © Everton S. Andrade
 ### Supported by
 
 [![Cerberus CI](https://img.shields.io/badge/Powered%20by-Cerberus%20CI-4ade81?style=flat-square)](https://github.com/EvertonSt/cerberus-ci)
-[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat-square&logo=vercel)](https://argus-dashboard-n28z9hemv-everton-qa.vercel.app)
