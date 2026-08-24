@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "framework": null,
+  "buildCommand": "cd dashboard && npm run build",
+  "outputDirectory": "dashboard/out",
+  "installCommand": "cd dashboard && npm install"
+}
