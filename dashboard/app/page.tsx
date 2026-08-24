@@ -14,6 +14,10 @@ export default function DashboardHome() {
   if (!data.latestRun) {
     return (
       <main className="max-w-6xl mx-auto px-6 py-8">
+      {/* Demonstration Run Banner */}
+      <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-3 text-center text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
+        Demonstration run · Synthetic test data
+      </div>
         <div className="text-center py-16">
           <h2 className="text-xl font-semibold mb-3">No runs yet</h2>
           <p className="text-muted mb-4">Run the pipeline to populate this dashboard. No API key is required:</p>
@@ -25,6 +29,10 @@ export default function DashboardHome() {
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-8">
+      {/* Demonstration Run Banner */}
+      <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-3 text-center text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
+        Demonstration run · Synthetic test data
+      </div>
       <RunCards run={data.latestRun} bugs={data.bugs} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
