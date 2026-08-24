@@ -1,4 +1,5 @@
 {
   "version": 2,
-  "name": "argus-dashboard"
+  "name": "argus-dashboard",
+  "outputDirectory": "out"
 }
