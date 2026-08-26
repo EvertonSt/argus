@@ -181,3 +181,5 @@ MIT © Everton S. Andrade
 
 [![Cerberus CI](https://img.shields.io/badge/Powered%20by-Cerberus%20CI-4ade81?style=flat-square)](https://github.com/EvertonSt/cerberus-ci)
 [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat-square&logo=vercel)](https://argus-dashboard-n28z9hemv-everton-qa.vercel.app)
+
+<!-- contributor-graph refresh 1787771930 -->
