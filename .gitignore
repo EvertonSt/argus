@@ -16,3 +16,5 @@ generated-tests/*.spec.ts
 playwright-report/
 test-results/
 data/pw-artifacts/
+.vercel
+.env*
