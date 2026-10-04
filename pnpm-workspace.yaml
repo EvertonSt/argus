@@ -43,3 +43,17 @@ allowBuilds:
 overrides:
   postcss: 8.5.28
   sharp: 0.35.5
+
+# NOT pinned: one dev-tree advisory remains and cannot be fixed.
+#
+#   braces <= 3.0.3  (stack-exhaustion DoS), reached through
+#   dashboard > eslint-config-next > @next/eslint-plugin-next > fast-glob > micromatch > braces
+#   dashboard > tailwindcss > micromatch > braces
+#
+# The advisory names 3.0.4 as patched. That version does not exist: braces has
+# no 4.x, 3.0.3 is still the latest publish, and micromatch requires
+# `^3.0.3`. Pinning the advisory's own suggested version fails to resolve.
+#
+# It is a lint and watcher dependency that never ships, which is what the
+# `critical` dev threshold in the security job is for. If a patched braces is
+# ever published, add it here alongside the two above.

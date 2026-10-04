@@ -50,14 +50,14 @@
     "@eslint/js": "9.39.5",
     "@playwright/test": "1.63.0",
     "@types/node": "22.19.1",
-    "@vitest/coverage-v8": "2.1.9",
+    "@vitest/coverage-v8": "3.2.7",
     "eslint": "9.39.5",
     "globals": "16.5.0",
     "prettier": "3.9.9",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "typescript-eslint": "8.71.0",
-    "vitest": "2.1.9",
+    "vitest": "3.2.7",
     "wait-on": "9.5.1"
   }
 }
