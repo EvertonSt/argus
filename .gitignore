@@ -1,0 +1,13 @@
+# secrets and env
+.env
+.env.*
+!.env.example
+
+# dependencies and builds
+node_modules/
+dist/
+build/
+coverage/
+
+# runtime evidence
+*.log
