@@ -186,3 +186,80 @@ pnpm 11.20.0), and `pnpm audit --prod` clean on both.
    so `runPipeline` and `src/execution` have a suite of their own.
 3. Decide whether the five moderate vite/esbuild advisories under vitest are
    worth the next vitest major.
+
+---
+
+## 2026-10-04 — The gate that could never pass
+
+### DID
+
+- Replaced the empty-baseline gate with a committed known-defect baseline at
+  `baseline/known-bugs.json`, outside gitignored `data/`. A failure matching an
+  entry is recorded as `baselinedAs`, reported as known, and excluded from
+  `newBugs`.
+- Baseline matching is its own explicit rule — verdict, then `featureId`, then
+  title similarity as a fallback — rather than `scoreSignatures`. Reasons in
+  `src/bug-filer/baseline.ts` and ADR 0007.
+- Added `argus baseline [--write]` to inspect and extend the file from a run.
+- The PR comment now renders known defects in a collapsible section naming each
+  baseline id, so a green build does not look identical to a build with nothing
+  to report.
+- Found and fixed product output still telling users to run `npm run …` in a
+  pnpm-only repository: `pipeline.ts`, `demo-server.ts`, `drift-demo.ts`,
+  `index.ts`, `dashboard/app/page.tsx`, `.env.example`, and the committed docs.
+  `dashboard/vercel.json` ran `npm install`, which would have produced a second
+  lockfile on deploy. `scripts/capture-run.ts` spawned `npx`.
+- Tests 355 → 388 across 20 files. Coverage 76.92 → **77.18** statements,
+  87.26 → **87.38** branches, 84.32 → **85.21** functions.
+
+### PROOF
+
+Both directions, from a clean `data/` — the state CI starts in.
+
+Baseline intact:
+
+```
+3 bug(s) filed — 0 new, 3 known, 0 duplicate(s)
+CI gate            PASS
+```
+
+One entry deleted from `baseline/known-bugs.json`:
+
+```
+3 bug(s) filed — 1 new, 2 known, 0 duplicate(s)
+CI gate            FAIL
+  1 new bug(s) at or above "high" severity
+[ELIFECYCLE] Command failed with exit code 1.
+```
+
+The negative case is the one that matters: the gate still bites, and it names
+exactly the defect whose entry was removed while the other two stayed known.
+
+### DID NOT PROVE
+
+- **Two defects on the same feature collapse into one.** Matching is on
+  `(featureId, verdict)`, so a second, genuinely different bug in an
+  already-broken feature is reported as known. Deliberate, and the sharpest
+  edge here: it trades a missed regression for a gate people do not ignore.
+- **The injected fourth defect was not exercised through the gate.** A real bug
+  was injected into the demo app's stats page, and triage classified it
+  `flaky` — because `fixtures/triage-stats-page-shows-totals.json` hardcodes
+  that verdict. Mock triage reads fixtures, so it cannot classify a defect no
+  fixture anticipated. The negative test therefore used baseline removal rather
+  than an injected defect. Same conclusion, different mechanism; stated so the
+  two are not confused later.
+- **Live mode has not been run against this baseline.** Triage fixtures supply
+  the verdicts in mock mode. A live run's planner words its test cases
+  differently, so the baseline's title strings will differ — which the matching
+  rule is built to survive, but that has not been observed on a real endpoint.
+- The browser-driven path still has no unit test; the dashboard still has none.
+
+### NEXT
+
+1. Run the QA workflow live against a baseline generated from a live triage, so
+   the featureId-anchored match is exercised by a real planner rather than
+   fixtures.
+2. An end-to-end test that boots the demo app and runs the loop in `--mock`, so
+   `runPipeline` and `src/execution` have a suite of their own.
+3. Decide whether the five moderate vite/esbuild advisories under vitest are
+   worth the next vitest major.

@@ -158,11 +158,70 @@ describe('renderPrComment', () => {
     const none: CiReportInput = { ...base, filedBugs: [] };
     expect(renderPrComment(none)).not.toContain('Newly filed bugs');
   });
+
+  it('shows baselined defects instead of hiding them', () => {
+    // A green build that silently swallowed the three defects the demo app
+    // ships would look identical to a build that had nothing to report. The
+    // comment has to name them so a reviewer can tell the difference.
+    const baselined: CiReportInput = {
+      ...base,
+      filedBugs: [{ ...base.filedBugs[0]!, baselinedAs: 'BASE-002' }],
+      gateFailed: false,
+      gateReason: 'no new bugs at or above "high" severity (1 matched the baseline)',
+    };
+    const comment = renderPrComment(baselined);
+    expect(comment).toContain('Known defects, already baselined');
+    expect(comment).toContain('BASE-002');
+    expect(comment).not.toContain('Newly filed bugs');
+  });
+
+  it('does not block on a baselined defect at critical severity', () => {
+    const baselined: CiReportInput = {
+      ...base,
+      filedBugs: [{ ...base.filedBugs[0]!, baselinedAs: 'BASE-002' }],
+      gateFailed: false,
+      gateReason: 'no new bugs at or above "high" severity (1 matched the baseline)',
+    };
+    const comment = renderPrComment(baselined);
+    expect(comment).toContain('merge not blocked');
+    expect(comment).not.toContain('merge blocked');
+  });
+
+  it('lists a new bug and a baselined one separately', () => {
+    const mixed: CiReportInput = {
+      ...base,
+      filedBugs: [
+        { ...base.filedBugs[0]! },
+        {
+          ...base.filedBugs[0]!,
+          id: 'BUG-2',
+          title: 'Stats page reports the wrong total',
+          testCaseId: 'stats-total',
+          baselinedAs: 'BASE-003',
+        },
+      ],
+    };
+    const comment = renderPrComment(mixed);
+    expect(comment).toContain('Newly filed bugs (1)');
+    expect(comment).toContain('Known defects, already baselined (1)');
+    expect(comment).toContain('BASE-003');
+  });
 });
 
 describe('renderStepSummary', () => {
   it('summarises the run in one line', () => {
-    expect(renderStepSummary(base)).toBe('Argus: 5/8 passed, 1 new bug(s), gate FAILED');
+    expect(renderStepSummary(base)).toBe('Argus: 5/8 passed, 1 new bug(s), 0 known, gate FAILED');
+  });
+
+  it('reports how many defects matched the baseline', () => {
+    const baselined: CiReportInput = {
+      ...base,
+      filedBugs: [{ ...base.filedBugs[0]!, baselinedAs: 'BASE-002' }],
+      gateFailed: false,
+    };
+    expect(renderStepSummary(baselined)).toBe(
+      'Argus: 5/8 passed, 0 new bug(s), 1 known, gate passed',
+    );
   });
 });
 

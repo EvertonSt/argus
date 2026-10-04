@@ -29,6 +29,7 @@ const baseConfig: ArgusConfig = {
     inventory: '/tmp/argus/data/inventory.json',
     testCases: '/tmp/argus/data/test-cases.json',
     bugs: '/tmp/argus/data/bugs.json',
+    baseline: '/tmp/argus/baseline/known-bugs.json',
     generatedTests: '/tmp/argus/generated-tests',
     fixtures: '/tmp/argus/fixtures',
     dashboard: '/tmp/argus/dashboard',

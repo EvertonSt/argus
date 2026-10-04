@@ -50,8 +50,9 @@ function countVerdicts(artifact: CiReportInput): Record<TriageVerdict, number> {
 export function renderPrComment(artifact: CiReportInput): string {
   const { summary } = artifact;
   const counts = countVerdicts(artifact);
-  const fresh = artifact.filedBugs.filter((bug) => !bug.isDuplicateOf);
-  const duplicates = artifact.filedBugs.length - fresh.length;
+  const fresh = artifact.filedBugs.filter((bug) => !bug.isDuplicateOf && !bug.baselinedAs);
+  const known = artifact.filedBugs.filter((bug) => bug.baselinedAs);
+  const duplicates = artifact.filedBugs.filter((bug) => bug.isDuplicateOf);
 
   const headline = artifact.gateFailed
     ? '### ❌ Argus QA — merge blocked'
@@ -89,9 +90,34 @@ export function renderPrComment(artifact: CiReportInput): string {
     lines.push('');
   }
 
-  if (duplicates > 0) {
+  // Known defects are shown, not hidden. Suppressing them would make the gate
+  // look clean for the wrong reason: a reviewer should be able to see that the
+  // three failures Argus reports are the three the demo app ships deliberately,
+  // rather than having to take the green build's word for it.
+  if (known.length > 0) {
     lines.push(
-      `_${duplicates} further failure(s) matched an already-filed bug and were not re-filed._`,
+      `<details><summary>📌 Known defects, already baselined (${known.length})</summary>`,
+      '',
+    );
+    for (const bug of known) {
+      lines.push(
+        `- ${SEVERITY_ICON[bug.severity]} **${bug.severity}** — ${bug.title} ` +
+          `\`${bug.testCaseId}\` · baseline \`${bug.baselinedAs}\``,
+      );
+    }
+    lines.push(
+      '',
+      '_These are recorded in `baseline/known-bugs.json`, so they do not block a merge. ' +
+        'A defect is new only when it does not match that file._',
+      '',
+      '</details>',
+      '',
+    );
+  }
+
+  if (duplicates.length > 0) {
+    lines.push(
+      `_${duplicates.length} further failure(s) matched an already-filed bug and were not re-filed._`,
       '',
     );
   }
@@ -132,10 +158,12 @@ export function renderPrComment(artifact: CiReportInput): string {
 
 /** One-line summary for the GitHub Actions step summary / job log. */
 export function renderStepSummary(artifact: CiReportInput): string {
-  const fresh = artifact.filedBugs.filter((bug) => !bug.isDuplicateOf).length;
+  const fresh = artifact.filedBugs.filter((bug) => !bug.isDuplicateOf && !bug.baselinedAs).length;
+  const known = artifact.filedBugs.filter((bug) => bug.baselinedAs).length;
   return (
     `Argus: ${artifact.summary.passed}/${artifact.summary.total} passed, ` +
-    `${fresh} new bug(s), gate ${artifact.gateFailed ? 'FAILED' : 'passed'}`
+    `${fresh} new bug(s), ${known} known, ` +
+    `gate ${artifact.gateFailed ? 'FAILED' : 'passed'}`
   );
 }
 

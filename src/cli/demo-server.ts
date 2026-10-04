@@ -107,7 +107,7 @@ export async function ensureDemoApp(root: string, url: string): Promise<DemoServ
     await stopSpawnedServer(child, url);
     throw new Error(
       `The bundled demo app did not come up at ${url}. ` +
-        `Start it manually with \`npm run demo\` and re-run.`,
+        `Start it manually with \`pnpm run demo\` and re-run.`,
     );
   }
 

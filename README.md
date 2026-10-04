@@ -4,7 +4,7 @@
 
 ## An autonomous QA agent that plans tests, runs them, and triages its own failures
 
-[![Tests](https://img.shields.io/badge/Tests-355%20passing-4ade81?style=flat-square)](https://github.com/EvertonSt/argus/actions)
+[![Tests](https://img.shields.io/badge/Tests-388%20passing-4ade81?style=flat-square)](https://github.com/EvertonSt/argus/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
@@ -37,6 +37,14 @@ The gate is:
   CI passes UNLESS there are NEW real bugs at or above "high" severity.
   Flaky failures, selector drift, and environment issues NEVER block a merge.
 ```
+
+"New" is measured, not assumed. Defects that were already in the repository are
+recorded in [`baseline/known-bugs.json`](baseline/known-bugs.json) — the three
+the demo app ships deliberately are in there — and a failure matching one is
+reported as known instead of blocking. A gate that can never be green is a gate
+people learn to ignore; see [ADR 0007](docs/decisions/0007-baseline-known-defects-in-source.md)
+for how the match is defined and why it is keyed on feature id rather than on
+the volatile text of a Playwright error.
 
 Severity scoring, deduplication, execution and the gate contain **zero** model
 calls. Only planning and triage use a model — two call sites. The cost of a run
@@ -141,7 +149,7 @@ pnpm argus -- run
 | Pipeline         | Runnability preconditions and the severity threshold                     | 1 file  |
 | CI & demo app    | Workflow wiring, demo-app lifecycle, logger behaviour                    | 3 files |
 
-**355 tests across 19 files. No test makes a network call or needs an API key**,
+**388 tests across 20 files. No test makes a network call or needs an API key**,
 so a fresh clone is green offline.
 
 ### What these checks do not prove
@@ -165,6 +173,11 @@ that claims exactly what it does:
   and the demo app.** Whether triage correctly separates a real regression from
   a flake _on your codebase_ is the open question, and it is the reason the
   gate is severity-based rather than pass/fail.
+- **The baseline treats two defects on the same feature as one.** Matching is on
+  `(featureId, verdict)`, so a second, different bug in an already-broken feature
+  is reported as known rather than new. That is a deliberate trade: erring
+  toward "known" keeps the gate usable, and the cost is a missed regression that
+  a reviewer has to catch. It is the sharpest edge in this design.
 
 ---
 
@@ -217,7 +230,8 @@ argus/
 │   └── dashboard/    # static chart.js dashboard served by `argus dashboard`
 ├── dashboard/        # Next.js 15 + Tailwind dashboard (separate workspace package)
 ├── demo-app/         # Tasker — a deliberately broken test target. Do not deploy
-├── test/             # 355 tests, no network, no key
+├── baseline/         # committed known defects — what the gate treats as already there
+├── test/             # 388 tests, no network, no key
 ├── fixtures/         # model responses and reports the suite runs against
 └── docs/             # talking points and the demo capture
 ```

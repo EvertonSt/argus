@@ -14,8 +14,8 @@ Regenerate it after any change to the CLI output:
 
 ```bash
 rm -rf data generated-tests     # so the run files bugs as new, not duplicates
-npm run demo:capture            # real run -> docs/run-capture.json
-npm run demo:gif                # -> docs/demo.gif
+pnpm run demo:capture            # real run -> docs/run-capture.json
+pnpm run demo:gif                # -> docs/demo.gif
 ```
 
 Requires Python with Pillow (`pip install pillow`).

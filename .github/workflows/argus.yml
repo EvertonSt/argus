@@ -9,6 +9,13 @@ name: Argus QA
 # fails the build. This is the whole point - a QA gate nobody trusts gets
 # ignored, and the usual reason nobody trusts one is flaky tests blocking
 # unrelated PRs.
+#
+# "New" is measured against baseline/known-bugs.json, which is committed on
+# purpose. Without it this job fails on every pull request, including ones that
+# change nothing: the demo app ships three deliberate defects, and the runtime
+# store they would be compared against lives in gitignored data/, so on a fresh
+# checkout there is nothing to compare to and all three read as new. Adding an
+# entry to that file is an explicit, reviewed decision in a diff. See ADR 0007.
 
 on:
   pull_request:
@@ -167,6 +174,8 @@ jobs:
 
       - name: Enforce the severity gate
         # Exit code 1 from `argus run` means a new real bug met the threshold.
+        # Defects matching baseline/known-bugs.json are reported as known and
+        # never reach this step.
         #
         # Read the threshold from the env var the workflow actually sets. The
         # message previously interpolated ARGUS_SEVERITY_FAIL_THRESHOLD, which

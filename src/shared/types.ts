@@ -159,6 +159,15 @@ export interface FiledBug {
   reproSteps: string[];
   /** Id of an existing bug this duplicates, when matched above threshold. */
   isDuplicateOf?: string;
+  /**
+   * Id of the committed baseline entry this bug matches, when it is a known
+   * defect. Distinct from `isDuplicateOf`: a duplicate is a second sighting of
+   * something this workspace already filed, whereas a baseline match is a
+   * defect that was already known when the repository was cloned. Only the
+   * former is an accident worth reporting as new; both are excluded from the
+   * gate, and they are reported separately because they mean different things.
+   */
+  baselinedAs?: string;
   filedAt: string;
   /** Similarity score behind `isDuplicateOf`, for auditability. */
   duplicateScore?: number;

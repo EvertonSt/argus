@@ -7,6 +7,7 @@
  *   argus run --mock                 run it with fixtures — no API key, no cost
  *   argus dashboard                  serve the dashboard and print the URL
  *   argus triage-log                 print the last run's triage reasoning
+ *   argus baseline [--write]         inspect or extend the known-defect baseline
  */
 import fs from 'node:fs';
 import http from 'node:http';
@@ -17,6 +18,7 @@ import { ArgusError } from '../shared/ai-client.js';
 import { log, paint, severityBadge, verdictBadge } from '../shared/logger.js';
 import { readJson } from '../shared/storage.js';
 import type { FiledBug, TriageLogEntry } from '../shared/types.js';
+import { loadBaseline, nextBaselineId, type BaselineBug } from '../bug-filer/baseline.js';
 import { assertRunnable, runPipeline } from './pipeline.js';
 import { ensureDemoApp, resetDemoApp } from './demo-server.js';
 import { renderPrComment, type CiReportInput, buildDashboardData } from './ci-report.js';
@@ -192,6 +194,104 @@ program
   });
 
 // ---------------------------------------------------------------------------
+// argus baseline
+// ---------------------------------------------------------------------------
+
+/**
+ * Turn a freshly filed bug into a baseline entry.
+ *
+ * Only the stable identity is recorded — feature id and verdict. The Playwright
+ * error text is deliberately dropped: it embeds retry counts, call logs and
+ * serialised DOM, none of which are stable across runs, so a baseline keyed on
+ * it would stop matching on the next CI run. See src/bug-filer/baseline.ts.
+ */
+function toBaselineEntry(bug: FiledBug, id: string): BaselineBug | null {
+  if (!bug.signature || bug.signature.featureId === '') return null;
+  return {
+    id,
+    title: bug.title,
+    featureId: bug.signature.featureId,
+    verdict: bug.signature.verdict,
+    severity: bug.severity,
+    note: '',
+    recordedAt: new Date().toISOString().slice(0, 10),
+  };
+}
+
+program
+  .command('baseline')
+  .description('Show the committed known-defect baseline, or extend it from the most recent run.')
+  .option('-w, --write', 'append newly filed bugs from the last run to the baseline file')
+  .action((options: { write?: boolean }) => {
+    const config = loadConfig();
+    const entries = loadBaseline(config.paths.baseline);
+
+    if (!options.write) {
+      log.blank();
+      if (entries.length === 0) {
+        log.warn(`No baseline at ${path.relative(config.paths.root, config.paths.baseline)}.`);
+        log.info('Run `argus run --mock`, then `argus baseline --write` to record what it found.');
+        log.blank();
+        return;
+      }
+      process.stdout.write(`${paint('bold', 'Known defects')} ${paint('dim', '(baselined)')}\n\n`);
+      for (const entry of entries) {
+        process.stdout.write(
+          `  ${severityBadge(entry.severity)}  ${paint('dim', entry.id)}  ${entry.title}\n` +
+            `      ${paint('gray', `feature ${entry.featureId} · ${entry.verdict}`)}\n`,
+        );
+      }
+      process.stdout.write('\n');
+      return;
+    }
+
+    const indexPath = path.join(config.paths.runs, 'index.json');
+    const index = readJson<Array<{ runId: string }>>(indexPath, []);
+    const latest = index[index.length - 1];
+    if (!latest) {
+      log.error('No runs found. Run `argus run --mock` first.');
+      process.exit(2);
+    }
+
+    const artifact = readJson<{ filedBugs?: FiledBug[] } | null>(
+      path.join(config.paths.runs, latest.runId, 'run.json'),
+      null,
+    );
+    const filed = artifact?.filedBugs ?? [];
+    const candidates = filed.filter((bug) => !bug.baselinedAs && !bug.isDuplicateOf);
+
+    const added: BaselineBug[] = [];
+    for (const bug of candidates) {
+      const entry = toBaselineEntry(bug, nextBaselineId([...entries, ...added]));
+      if (!entry) {
+        log.warn(
+          `Skipped "${bug.title}": no feature id on its signature, so it cannot be matched reliably.`,
+        );
+        continue;
+      }
+      added.push(entry);
+    }
+
+    if (added.length === 0) {
+      log.info('Nothing to add — the last run introduced no new bugs.');
+      return;
+    }
+
+    // Merged rather than overwritten: hand-written entries and any that the
+    // loader rejected on the way in are left alone.
+    const merged = [...entries, ...added];
+    fs.mkdirSync(path.dirname(config.paths.baseline), { recursive: true });
+    fs.writeFileSync(config.paths.baseline, `${JSON.stringify(merged, null, 2)}\n`, 'utf-8');
+    log.success(
+      `Added ${added.length} known defect(s) to ${path.relative(config.paths.root, config.paths.baseline)}`,
+    );
+    log.info('Review the diff, then commit it — the baseline is what keeps the gate honest.');
+    for (const entry of added) {
+      log.item(`${entry.id}  ${entry.title}`);
+    }
+  });
+
+// ---------------------------------------------------------------------------
 // argus ci-comment
 // ---------------------------------------------------------------------------
 
@@ -207,7 +307,7 @@ program
       fs.writeFileSync(path.join(exportDir, name), JSON.stringify(json, null, 2));
     }
     log.success(`Dashboard data exported to ${path.relative(config.paths.root, exportDir)}/`);
-    log.info('Run `cd dashboard && npm install && npm run build` to build the Next.js site.');
+    log.info('Run `pnpm run dashboard:build` to build the Next.js site.');
   });
 
 program

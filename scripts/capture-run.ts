@@ -16,20 +16,20 @@ const started = Date.now();
 const chunks: Array<{ t: number; text: string }> = [];
 
 const child = spawn(
-  process.platform === 'win32' ? 'npx.cmd' : 'npx',
-  ['tsx', 'src/cli/index.ts', 'run', '--mock'],
+  process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
+  ['exec', 'tsx', 'src/cli/index.ts', 'run', '--mock'],
   {
     // FORCE_COLOR so the captured stream keeps its ANSI codes even though
     // stdout is a pipe here rather than a terminal.
     //
-    // The npm_config_* pair silences npm's own warnings and notices, which are
-    // artefacts of the local npm setup rather than anything Argus prints — they
-    // would otherwise open the recording with three lines of unrelated noise.
+    // `pnpm exec` rather than `npx`: this repository has one package manager
+    // and one lockfile, and the capture should run the same binary CI runs. The
+    // npm_config_* pair that used to sit here silenced npm's own startup
+    // notices, which are artefacts of the local setup rather than anything
+    // Argus prints.
     env: {
       ...process.env,
       FORCE_COLOR: '1',
-      npm_config_loglevel: 'silent',
-      npm_config_foreground_scripts: 'false',
     },
     shell: process.platform === 'win32',
   },

@@ -24,7 +24,7 @@ export default function DashboardHome() {
             Run the pipeline to populate this dashboard. No API key is required:
           </p>
           <pre className="text-sm bg-panel border border-line rounded p-3 inline-block">
-            <code>npm run run:mock</code>
+            <code>pnpm run run:mock</code>
           </pre>
         </div>
       </main>

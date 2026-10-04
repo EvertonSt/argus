@@ -51,7 +51,7 @@ async function stopWhateverHoldsThePort(url: string): Promise<void> {
 
   log.error(
     `Could not free ${url} — something other than the bundled demo app is serving it.`,
-    'Stop that process, then re-run `npm run demo:drift`.',
+    'Stop that process, then re-run `pnpm run demo:drift`.',
   );
   process.exit(2);
 }
@@ -73,7 +73,7 @@ async function main(): Promise<void> {
   if (testCases.length === 0) {
     log.error(
       'No generated test cases found.',
-      'Run `npm run run:mock` first — this demo re-uses the suite that run produced.',
+      'Run `pnpm run run:mock` first — this demo re-uses the suite that run produced.',
     );
     process.exit(2);
   }

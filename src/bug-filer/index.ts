@@ -10,8 +10,10 @@
  * Fully deterministic — no LLM calls in this stage.
  */
 import type { FiledBug, RunSummary, Severity, TestCase, TriageResult } from '../shared/types.js';
-import { log, severityBadge } from '../shared/logger.js';
+import { log, paint, severityBadge } from '../shared/logger.js';
 import { readJson, slugify, writeJson } from '../shared/storage.js';
+import type { BaselineBug } from './baseline.js';
+import { matchBaseline } from './baseline.js';
 import { findDuplicate, buildSignature } from './duplicate-check.js';
 import { fileBugsToGitHub } from './github-filer.js';
 import { formatEnvironment, getEnvironmentInfo } from './environment.js';
@@ -43,6 +45,13 @@ export interface FileBugsOptions {
   testCases: TestCase[];
   /** Path to data/bugs.json — existing bugs are read for dedupe, then appended. */
   bugsPath: string;
+  /**
+   * Committed known defects. A bug matching one is recorded as known rather
+   * than new, and so never blocks a merge — without this the gate fails on
+   * every fresh checkout, because `bugsPath` lives in gitignored `data/` and is
+   * therefore empty there.
+   */
+  baseline?: readonly BaselineBug[];
 }
 
 export async function fileBugs(
@@ -59,6 +68,7 @@ export async function fileBugs(
   const failuresById = new Map(options.summary.failures.map((f) => [f.testCaseId, f]));
 
   const existing = readJson<FiledBug[]>(options.bugsPath, []);
+  const baseline = options.baseline ?? [];
   const filed: FiledBug[] = [];
 
   for (const result of realBugs) {
@@ -69,16 +79,26 @@ export async function fileBugs(
     const severityInput = buildSeverityInput(title, failure?.errorMessage ?? '', result);
     const severity: Severity = resolveSeverity(severityInput, testCase?.priority);
 
-    // Dedupe using the richer signature (title + featureId + error class +
-    // verdict), not just the title. Scored against everything filed previously
-    // plus anything filed earlier in this same run.
+    // Dedupe using the richer signature (title + featureId + normalised error
+    // class + verdict), not just the title.
     const signature = buildSignature(
       title,
       testCase?.featureId ?? '',
       failure?.errorMessage ?? '',
       result.verdict,
     );
-    const duplicate = findDuplicate(signature, [...existing, ...filed]);
+
+    // Two different questions, deliberately answered by two different
+    // mechanisms:
+    //   - Is this a defect we already shipped with?  -> committed baseline,
+    //     matched on (featureId, verdict). See baseline.ts for why this is not
+    //     the fuzzy scorer.
+    //   - Is this a second sighting of one this workspace filed? -> runtime
+    //     dedupe, matched on the full signature.
+    // A known defect never re-files as an issue either, so baselined bugs skip
+    // the GitHub step below.
+    const known = matchBaseline(signature, baseline);
+    const duplicate = known ? null : findDuplicate(signature, [...existing, ...filed]);
 
     const bug: FiledBug = {
       id: `BUG-${slugify(result.testCaseId, 32)}-${Date.now().toString(36).slice(-4)}`,
@@ -92,6 +112,10 @@ export async function fileBugs(
       signature,
     };
 
+    if (known) {
+      bug.baselinedAs = known.entry.id;
+    }
+
     if (duplicate) {
       bug.isDuplicateOf = duplicate.id;
       bug.duplicateScore = Math.round(duplicate.score * 100) / 100;
@@ -100,7 +124,7 @@ export async function fileBugs(
     filed.push(bug);
 
     // If GitHub is configured, create an issue (best-effort, never blocks the gate).
-    if (process.env.ARGUS_GITHUB_TOKEN && process.env.ARGUS_GITHUB_REPO) {
+    if (process.env.ARGUS_GITHUB_TOKEN && process.env.ARGUS_GITHUB_REPO && !known) {
       try {
         const ghResult = await fileBugsToGitHub([bug]);
         const result = ghResult[bug.id];
@@ -112,19 +136,28 @@ export async function fileBugs(
       }
     }
 
-    const dupNote = duplicate ? ` (duplicate of ${duplicate.id}, ${bug.duplicateScore})` : '';
-    log.item(`${severityBadge(severity)}  ${title}${dupNote}`);
+    const note = known
+      ? paint('dim', ` (known defect, baselined as ${known.entry.id})`)
+      : duplicate
+        ? paint('dim', ` (duplicate of ${duplicate.id}, ${bug.duplicateScore})`)
+        : '';
+    log.item(`${severityBadge(severity)}  ${title}${note}`);
   }
 
   writeJson(options.bugsPath, [...existing, ...filed]);
   return filed;
 }
 
-/** Bugs that are not duplicates — what the CI gate and dashboard count. */
+/**
+ * Bugs that are new: neither a duplicate of one this workspace already filed,
+ * nor a defect the committed baseline already records. This is what the
+ * severity gate counts and what the dashboard labels "new".
+ */
 export function newBugs(bugs: FiledBug[]): FiledBug[] {
-  return bugs.filter((bug) => !bug.isDuplicateOf);
+  return bugs.filter((bug) => !bug.isDuplicateOf && !bug.baselinedAs);
 }
 
+export * from './baseline.js';
 export * from './severity.js';
 export * from './duplicate-check.js';
 export * from './environment.js';

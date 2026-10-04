@@ -1,0 +1,29 @@
+[
+  {
+    "id": "BASE-001",
+    "title": "Marking a task complete survives a page reload",
+    "featureId": "home-checkbox-mark-complete",
+    "verdict": "real_bug",
+    "severity": "high",
+    "note": "Demo app BUG-2. The checkbox handler updates the DOM optimistically and never posts to the server, so the completed state resets on reload. Deliberate — do not fix. See demo-app/KNOWN_BUGS.md.",
+    "recordedAt": "2026-10-04"
+  },
+  {
+    "id": "BASE-002",
+    "title": "Deleting a task removes the task that was clicked",
+    "featureId": "home-button-delete",
+    "verdict": "real_bug",
+    "severity": "critical",
+    "note": "Demo app BUG-1. POST /tasks/delete resolves the task by matching on `text` instead of the submitted `id`, so with two tasks sharing the same text the wrong one is removed. Deliberate — do not fix. See demo-app/KNOWN_BUGS.md.",
+    "recordedAt": "2026-10-04"
+  },
+  {
+    "id": "BASE-003",
+    "title": "Submitting an empty task is rejected",
+    "featureId": "home-form-add-task",
+    "verdict": "real_bug",
+    "severity": "high",
+    "note": "Demo app BUG-3. POST /tasks/add has no validation on the client or the server, so an empty submission creates a blank task. Deliberate — do not fix. See demo-app/KNOWN_BUGS.md.",
+    "recordedAt": "2026-10-04"
+  }
+]

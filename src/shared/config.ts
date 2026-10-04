@@ -43,6 +43,12 @@ export interface ArgusConfig {
     demoApp: string;
     testCases: string;
     bugs: string;
+    /**
+     * Committed known-defect baseline. Deliberately outside `data/`, which is
+     * gitignored: this file is source, reviewed in diffs, and is what lets the
+     * gate tell a new regression apart from a defect that was already there.
+     */
+    baseline: string;
     inventory: string;
     triageLog: string;
   };
@@ -155,6 +161,7 @@ export function loadConfig(): ArgusConfig {
       demoApp: path.join(ROOT, 'demo-app'),
       testCases: path.join(ROOT, 'data', 'test-cases.json'),
       bugs: path.join(ROOT, 'data', 'bugs.json'),
+      baseline: path.join(ROOT, 'baseline', 'known-bugs.json'),
       inventory: path.join(ROOT, 'data', 'inventory.json'),
       triageLog: path.join(ROOT, 'data', 'triage.log'),
     },

@@ -28,7 +28,7 @@ import { planTestCases, countByPriority } from '../planner/index.js';
 import { codegenStats, generateTests } from '../codegen/index.js';
 import { captureDomSnapshots, executeSuite } from '../execution/index.js';
 import { summarizeVerdicts, triageFailures } from '../triage/index.js';
-import { fileBugs, newBugs } from '../bug-filer/index.js';
+import { fileBugs, newBugs, loadBaseline } from '../bug-filer/index.js';
 
 export interface RunOptions {
   config: ArgusConfig;
@@ -151,19 +151,25 @@ export async function runPipeline(options: RunOptions): Promise<RunOutcome> {
 
   // ---- 6. File bugs -----------------------------------------------------
   log.stage('File bugs', 'real bugs only, with dedupe');
+  // Load the committed known-defect baseline. Without it every defect this app
+  // shipped with reads as new on a fresh checkout, and the gate is red forever.
+  const baseline = loadBaseline(config.paths.baseline);
   const filedBugs: FiledBug[] = await fileBugs(triage, {
     runId,
     summary,
     testCases,
     bugsPath: config.paths.bugs,
+    baseline,
   });
   const fresh = newBugs(filedBugs);
+  const known = filedBugs.filter((bug) => bug.baselinedAs);
+  const duplicates = filedBugs.filter((bug) => bug.isDuplicateOf);
   if (filedBugs.length === 0) {
     log.info('No real bugs to file.');
   } else {
     log.success(
       `${filedBugs.length} bug(s) filed — ${fresh.length} new, ` +
-        `${filedBugs.length - fresh.length} duplicate(s)`,
+        `${known.length} known, ${duplicates.length} duplicate(s)`,
     );
   }
 
@@ -176,8 +182,11 @@ export async function runPipeline(options: RunOptions): Promise<RunOutcome> {
   const gateFailed = blocking.length > 0;
   const gateReason = gateFailed
     ? `${blocking.length} new bug(s) at or above "${config.severityFailThreshold}" severity`
-    : `no new bugs at or above "${config.severityFailThreshold}" severity ` +
-      `(flaky and selector-drift failures never block a merge)`;
+    : `no new bugs at or above "${config.severityFailThreshold}" severity` +
+      (known.length > 0
+        ? ` (${known.length} matched the committed baseline of known defects)`
+        : '') +
+      ' (flaky and selector-drift failures never block a merge)';
 
   const artifact: RunOutcome = {
     runId,
@@ -206,12 +215,13 @@ export async function runPipeline(options: RunOptions): Promise<RunOutcome> {
     ['Tests', `${summary.passed}/${summary.total} passed`],
     ['Real bugs', String(triage.filter((t) => t.verdict === 'real_bug').length)],
     ['New bugs filed', String(fresh.length)],
+    ['Known (baselined)', String(known.length)],
     ['AI calls', `${ai.callCount}${mock ? ' (mock — no spend)' : ''}`],
     ['CI gate', gateFailed ? paint('red', 'FAIL') : paint('green', 'PASS')],
   ]);
   log.detail(gateReason);
   log.blank();
-  log.info(`Next: ${paint('cyan', 'npm run dashboard')} to view the report.`);
+  log.info(`Next: ${paint('cyan', 'pnpm run dashboard')} to view the report.`);
   log.blank();
 
   return artifact;

@@ -134,13 +134,13 @@ Three things I now do by default, all learned building this:
 
 ## 7. Demo to show (have it open)
 
-- `npm run run:mock` — full loop, bundled fixtures, ~35s, zero cost. Files 3
+- `pnpm run run:mock` — full loop, bundled fixtures, ~35s, zero cost. Files 3
   bugs, fails the gate by design on the first clean run; second run shows them
   as duplicates and passes.
-- `npm run demo:drift` — renames a button, re-runs, and Argus classifies the
+- `pnpm run demo:drift` — renames a button, re-runs, and Argus classifies the
   failure as _selector drift_ (a UI change) rather than a bug, with a suggested
   fix it never applies. This is the one-slide version of the whole thesis.
-- The dashboard at `npm run dashboard` — coverage, pass/fail history, triage
+- The dashboard at `pnpm run dashboard` — coverage, pass/fail history, triage
   breakdown, filed bugs, all from JSON.
 
 ---
