@@ -1,0 +1,50 @@
+[
+  {
+    "id": "tc-1",
+    "featureId": "f1",
+    "title": "can add a task",
+    "priority": "high",
+    "gherkin": {
+      "given": "the page is loaded",
+      "when": "I add a task",
+      "then": "a new task appears"
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "tc-2",
+    "featureId": "f2",
+    "title": "can delete a task",
+    "priority": "high",
+    "gherkin": {
+      "given": "a task exists",
+      "when": "I click delete",
+      "then": "the task is removed"
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "tc-3",
+    "featureId": "f3",
+    "title": "marks task complete",
+    "priority": "high",
+    "gherkin": {
+      "given": "a task exists",
+      "when": "I mark it complete",
+      "then": "it persists through refresh"
+    },
+    "targetRoute": "/"
+  },
+  {
+    "id": "tc-4",
+    "featureId": "f4",
+    "title": "rejects empty submission",
+    "priority": "medium",
+    "gherkin": {
+      "given": "the page is loaded",
+      "when": "I submit the empty form",
+      "then": "no empty task is created"
+    },
+    "targetRoute": "/"
+  }
+]
