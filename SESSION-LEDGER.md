@@ -128,3 +128,61 @@ checking, so nothing would have caught it until the code was read.
 3. Component tests for the dashboard, or an explicit decision that it has none.
 4. Decide whether the `--mock` fixtures are a fair proxy for live triage, and
    write down the answer either way.
+
+---
+
+## 2026-10-03 — First push, and the two things it found
+
+### PROOF
+
+```
+https://github.com/EvertonSt/argus/actions/runs/37168724270
+conclusion: success
+
+  success  format, lint, types, builds
+  success  unit tests (+ coverage floor)
+  success  links, secrets, authorship
+  success  security audit
+```
+
+Full gate green on Windows and on Ubuntu 24.04 under WSL2 (Node 22.23.3,
+pnpm 11.20.0), and `pnpm audit --prod` clean on both.
+
+### DID NOT PROVE
+
+- **The first CI run failed all four jobs before executing a line of Argus.**
+  `pnpm/action-setup` refuses to run without a version, and package.json had no
+  `packageManager` field. Fixed and re-run green. Recorded because the lesson is
+  general: a workflow that has never executed is a document, not a check.
+- **The QA workflow is red on every pull request, and that is a real design
+  defect, not bad luck.** `argus.yml` runs Argus against the demo app, and the
+  demo app has three seeded bugs. The severity gate therefore fires on every
+  PR, including one that changed nothing, because "new bug" is measured against
+  an empty baseline on a fresh checkout. Every seeded bug counts as new.
+
+  This is precisely the failure the tool's own README argues against — a gate
+  that is always red teaches reviewers to ignore it — and the fix is to seed a
+  baseline of the demo app's known bugs so only genuinely new ones count. That
+  is the first thing to do, and it was not done here.
+
+- **The product did work.** Argus ran end to end on a GitHub runner, found the
+  demo app's seeded bugs, emitted PR annotations and commented the report. The
+  pipeline works; the baseline it compares against does not.
+- **The gate's error message named an unset variable** and printed "at or above
+  the '' severity threshold" on the first real finding. Fixed by defining
+  `ARGUS_SEVERITY_FAIL_THRESHOLD` in the workflow, which it already read.
+- **The dashboard has no unit tests**, and the browser-driven path is covered by
+  the QA workflow rather than by a test suite. Both carry over from the entry
+  above.
+- **Nothing is deployed.** The dashboard is deploy-ready as a static export;
+  no deployment exists.
+
+### NEXT
+
+1. Seed a baseline for the demo app's known bugs so the severity gate is only
+   red when something new appears. Highest value; the QA workflow is currently
+   a check that cannot pass.
+2. An end-to-end test that boots the demo app and runs the loop in `--mock`,
+   so `runPipeline` and `src/execution` have a suite of their own.
+3. Decide whether the five moderate vite/esbuild advisories under vitest are
+   worth the next vitest major.

@@ -33,6 +33,12 @@ jobs:
     env:
       ARGUS_TARGET: http://localhost:4317
       ARGUS_CI_THRESHOLD: ${{ vars.ARGUS_CI_THRESHOLD || 'high' }}
+      # The workflow reads this one, so it has to be defined. It did not
+      # exist before: the gate message interpolated an unset variable and
+      # announced "at or above the '' severity threshold" on the first real
+      # finding - the least useful sentence available at the moment a reader
+      # needs it.
+      ARGUS_SEVERITY_FAIL_THRESHOLD: ${{ vars.ARGUS_CI_THRESHOLD || 'high' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ARGUS_ANTHROPIC_MODEL: ${{ vars.ARGUS_ANTHROPIC_MODEL || 'claude-sonnet-4-20250514' }}
 
@@ -161,6 +167,12 @@ jobs:
 
       - name: Enforce the severity gate
         # Exit code 1 from `argus run` means a new real bug met the threshold.
+        #
+        # Read the threshold from the env var the workflow actually sets. The
+        # message previously interpolated ARGUS_SEVERITY_FAIL_THRESHOLD, which
+        # nothing defined, so the first real run announced "at or above the ''
+        # severity threshold" - the least useful sentence available at the exact
+        # moment a reader needs it.
         if: steps.argus.outcome == 'failure'
         run: |
           echo "::error::Argus found a new real bug at or above the '$ARGUS_SEVERITY_FAIL_THRESHOLD' severity threshold. See the PR comment for details."
