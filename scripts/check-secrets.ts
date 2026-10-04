@@ -24,6 +24,27 @@ const FORBIDDEN_NAMES: ReadonlyArray<{ name: string; re: RegExp }> = [
   { name: 'flagship deploy key', re: /id_ed25519_(sitecheckin|sc_deploy|az_deploy)/gi },
   { name: 'flagship domain', re: /(getsitecheckin|aiatendimento)\.(com|com\.br)/gi },
   { name: 'flagship repo path', re: /\/c\/Projects\/Flagships/gi },
+
+  /*
+   * Absolute paths into a specific person's home directory.
+   *
+   * Found by grepping the tree by hand before publishing: a captured
+   * Playwright report embeds the absolute path of every file it touched, so the
+   * node binary, the config file and the artifact directory all appear in it.
+   * The committed fixture carried `C:\Users\<name>\...` thirty-eight times,
+   * along with the name of a tool installed only on that one machine.
+   *
+   * It is not a credential, so no other rule here catches it, and it is not
+   * something a reviewer notices inside a 300-line JSON fixture. It is a
+   * username and a machine fingerprint, published verbatim.
+   *
+   * Both slash styles and both platforms, because the same report spells the
+   * same path either way depending on which machine produced it.
+   */
+  {
+    name: 'absolute home-directory path',
+    re: /(?:[A-Z]:\\|\/)(?:Users|home)[\\/][A-Za-z0-9._-]{2,}/g,
+  },
 ];
 
 /**
