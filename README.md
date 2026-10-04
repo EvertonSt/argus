@@ -181,6 +181,10 @@ that claims exactly what it does:
   and the demo app.** Whether triage correctly separates a real regression from
   a flake _on your codebase_ is the open question, and it is the reason the
   gate is severity-based rather than pass/fail.
+
+Every gap listed above has a place in [`ROADMAP.md`](ROADMAP.md), with what
+"done" means for each one.
+
 - **The baseline treats two defects on the same feature as one.** Matching is on
   `(featureId, verdict)`, so a second, different bug in an already-broken feature
   is reported as known rather than new. That is a deliberate trade: erring

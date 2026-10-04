@@ -28,9 +28,9 @@ Notes:
 - Dead air during the Playwright stage is compressed so the loop stays around
   six seconds. The clock still reports real elapsed time, so the animation
   never implies the run was faster than it was.
-- `capture-run.ts` silences npm's own warnings and notices. They come from the
-  local npm configuration, not from Argus, and would otherwise open the
-  recording with three lines of unrelated noise.
+- `capture-run.ts` spawns the CLI with `pnpm exec`, the same binary CI runs.
+  It previously used `npx` and suppressed npm's startup notices; pnpm emits
+  none worth filtering, so the suppression is gone rather than retargeted.
 
 `run-capture.json` is committed alongside the GIF so the recording can be
 re-rendered (different size, font, or pacing) without re-running the pipeline.
