@@ -1,0 +1,44 @@
+version: 2
+
+updates:
+  # The workspace root plus the dashboard are one dependency graph, so they are
+  # one entry. Two entries would produce two PRs resolving the same transitive
+  # package to different versions.
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    groups:
+      # Patch and minor bumps arrive together, because shipping a security fix
+      # alone is not worth the extra review and shipping minors alone is not
+      # worth the extra release.
+      patch-and-minor:
+        update-types:
+          - 'patch'
+          - 'minor'
+    commit-message:
+      prefix: 'deps'
+    # Majors are NOT muted and NOT grouped away. A breaking upgrade deserves its
+    # own pull request with its own review, which is the whole reason to keep
+    # this file honest rather than configuring it to be quiet.
+
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: 'deps(ci)'
+
+  # Every `uses:` in this repository is pinned to a commit SHA. Dependabot
+  # understands that and will open a PR carrying the new SHA plus the version
+  # comment, which is how a pinned action gets upgraded at all without someone
+  # hand-editing the digest and hoping the tag was not moved.

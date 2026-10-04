@@ -1,0 +1,116 @@
+name: CI
+
+# The gates this repository makes about itself. Argus running Argus against
+# every pull request is a separate workflow (`argus.yml`) - this one is the
+# ordinary "is the tree healthy" check, and it must pass even when the QA
+# product finds a real bug, or a bad day in the demo app would block work.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: format, lint, types, builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm dashboard:build
+
+  unit:
+    name: unit tests (+ coverage floor)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      # No test in this suite makes a live Anthropic call, so there is no key
+      # to configure and no reason a fork would go red here.
+      - run: pnpm test:coverage
+
+  readiness:
+    name: links, secrets, authorship
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # verify:attribution reads the commit history, not just the files.
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+
+  security:
+    name: security audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Calibrated by SURFACE, not by threshold. Production dependencies are
+      # the surface that ships to a user's CI runner, so they must sit at
+      # `high`. The dev tree is held at `critical` because it never ships.
+      # Moving a threshold to make a run green would leave a job displaying the
+      # word "audit" while measuring nothing - see ADR 0004.
+      - name: audit production dependencies
+        run: pnpm audit --audit-level high --prod
+
+      - name: audit development dependencies
+        continue-on-error: true
+        run: pnpm audit --audit-level critical
+
+      # A dev-only advisory should not be able to hold a release hostage, and
+      # should not be able to disappear silently either. This step fails if the
+      # exemption list is ever non-empty without a reason attached.
+      - name: the exemption list has no silent entries
+        run: |
+          if [ -f pnpm-workspace.yaml ]; then
+            if grep -A40 'overrides' pnpm-workspace.yaml | grep -q 'ignoreCves'; then
+              echo "::error::pnpm-workspace.yaml declares ignored CVEs. Each one needs a reason."
+              exit 1
+            fi
+            # Any override at all has to be justified in the file, so surface
+            # them for review rather than letting them accumulate silently.
+            if grep -A40 'overrides' pnpm-workspace.yaml | grep -qE '^\s+[a-z@][^:]*:\s*[0-9]'; then
+              echo "::notice::pnpm-workspace.yaml pins transitive versions. Confirm each"
+              echo "::notice::override still names a published version that carries its fix."
+            fi
+          fi
+          echo "audit policy reviewed"
