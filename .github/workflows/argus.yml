@@ -82,14 +82,22 @@ jobs:
 
       # Without a key, fall back to mock mode so forks and Dependabot PRs still
       # get a working run instead of a red X they cannot fix.
+      #
+      # Note the *script* is selected rather than a flag passed through
+      # `pnpm run argus -- run --mock`. pnpm 11 forwards that separator to the
+      # script verbatim, so the CLI received `-- run --mock`, commander never
+      # saw the subcommand, and the run aborted with "ANTHROPIC_API_KEY is not
+      # set, and --mock was not passed" while no data/ directory was written at
+      # all. Selecting a script passes no arguments and cannot be broken this
+      # way.
       - name: Decide run mode
         id: mode
         run: |
           if [ -n "$ANTHROPIC_API_KEY" ]; then
-            echo "flag=" >> "$GITHUB_OUTPUT"
+            echo "script=run" >> "$GITHUB_OUTPUT"
             echo "label=live" >> "$GITHUB_OUTPUT"
           else
-            echo "flag=--mock" >> "$GITHUB_OUTPUT"
+            echo "script=run:mock" >> "$GITHUB_OUTPUT"
             echo "label=mock (no ANTHROPIC_API_KEY available)" >> "$GITHUB_OUTPUT"
           fi
 
@@ -100,7 +108,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "Run mode: ${{ steps.mode.outputs.label }}"
-          pnpm run argus -- run ${{ steps.mode.outputs.flag }}
+          pnpm run "${{ steps.mode.outputs.script }}"
 
       - name: Build the PR comment
         if: always()
@@ -109,7 +117,7 @@ jobs:
         # comment step must never be the thing that breaks the build, or the
         # real error gets buried under an ENOENT.
         run: |
-          if pnpm run --silent argus -- ci-comment --out argus-comment.md; then
+          if pnpm run --silent ci-comment --out argus-comment.md; then
             echo "Comment rendered from the run artifact."
           else
             {

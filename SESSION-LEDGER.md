@@ -263,3 +263,72 @@ exactly the defect whose entry was removed while the other two stayed known.
    `runPipeline` and `src/execution` have a suite of their own.
 3. Decide whether the five moderate vite/esbuild advisories under vitest are
    worth the next vitest major.
+
+---
+
+## 2026-10-04 — Correction: the QA workflow never ran the product
+
+The entry above credits the QA workflow with having run Argus end to end on a
+GitHub runner. That was wrong, and checking it changed what this project knows.
+
+### WHAT WAS WRONG
+
+The 2026-10-03 entry says:
+
+> **The product did work.** Argus ran end to end on a GitHub runner, found the
+> demo app's seeded bugs, emitted PR annotations and commented the report.
+
+Every one of the seven Argus QA runs — `4f6723d`, `ea57993`, `e3a53f5`,
+`cb0ad99`, `6ac6bb4`, `7b4f88c`, `9c19a66` — failed the same way:
+
+```
+$ tsx src/cli/index.ts -- run --mock
+✗ ANTHROPIC_API_KEY is not set, and --mock was not passed.
+[ELIFOCYCLE] Command failed with exit code 2.
+```
+
+The pipeline never executed once. The `data/` upload step reported "No files
+were found with the provided path: data/", and the comment step printed "No
+runs found. Run `argus run` first."
+
+### WHY
+
+pnpm 11 forwards the `--` separator to the script verbatim:
+
+```
+$ pnpm run argus -- run --mock
+$ tsx src/cli/index.ts "--" "run" "--mock"     # separator reaches the CLI
+$ pnpm run argus run --mock
+$ tsx src/cli/index.ts "run" "--mock"           # works
+```
+
+Commander never saw the subcommand, `mock` stayed false, and `assertRunnable`
+correctly refused. The error message blamed the missing API key, which is the
+wrong culprit and is what made this read as a secrets problem rather than an
+invocation problem.
+
+### WHY IT SURVIVED THE FIRST ENTRY
+
+`continue-on-error: true` on the Run Argus step reports `conclusion: success`
+even when the command exits non-zero. The GitHub UI therefore showed a green
+step, and the failure only surfaced in the final gate step, whose message said
+"found a new real bug" — implying Argus had run and found something. It had
+found nothing. A green step and a plausible red message, both pointing away
+from the actual cause.
+
+### DID
+
+- The workflow selects a **script** (`run` or `run:mock`) instead of passing a
+  flag through `pnpm run argus --`. No argument forwarding, nothing to break.
+- The same fix applied to the comment step, which used the same broken form.
+- Rehearsed both invocations locally before pushing, not after.
+
+### DID NOT PROVE
+
+- **The live path is still unproven.** Every QA run has been mock mode with no
+  key available. `run` (live) has never executed in CI, and the planner and
+  triage calls it makes are the part of the system no test covers.
+- This is the second time the same workflow failed for a reason unrelated to
+  its stated purpose. The lesson is not "add a test"; it is that a step marked
+  `continue-on-error` cannot be used as evidence that anything ran. The run
+  artifact, not the step's green tick, is the proof.
