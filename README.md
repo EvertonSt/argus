@@ -46,6 +46,14 @@ people learn to ignore; see [ADR 0007](docs/decisions/0007-baseline-known-defect
 for how the match is defined and why it is keyed on feature id rather than on
 the volatile text of a Playwright error.
 
+The gate also refuses to report on a run that never finished. `argus verify-run`
+reads the verdict out of the run artifact — written only after all seven stages
+complete — and distinguishes three outcomes: the pipeline did not complete (exit
+2, _not_ a gate result), the gate failed (exit 1), or the gate passed (exit 0).
+It exists because a QA workflow that only watches a process exit code cannot tell
+"found a real bug" from "never ran", and this one once reported the second while
+claiming the first, seven times in a row.
+
 Severity scoring, deduplication, execution and the gate contain **zero** model
 calls. Only planning and triage use a model — two call sites. The cost of a run
 is bounded before it starts (`ARGUS_MAX_AI_CALLS`), not discovered afterwards.
@@ -149,7 +157,7 @@ pnpm argus -- run
 | Pipeline         | Runnability preconditions and the severity threshold                     | 1 file  |
 | CI & demo app    | Workflow wiring, demo-app lifecycle, logger behaviour                    | 3 files |
 
-**388 tests across 20 files. No test makes a network call or needs an API key**,
+**416 tests across 21 files. No test makes a network call or needs an API key**,
 so a fresh clone is green offline.
 
 ### What these checks do not prove
@@ -231,7 +239,7 @@ argus/
 ├── dashboard/        # Next.js 15 + Tailwind dashboard (separate workspace package)
 ├── demo-app/         # Tasker — a deliberately broken test target. Do not deploy
 ├── baseline/         # committed known defects — what the gate treats as already there
-├── test/             # 388 tests, no network, no key
+├── test/             # 416 tests, no network, no key
 ├── fixtures/         # model responses and reports the suite runs against
 └── docs/             # talking points and the demo capture
 ```

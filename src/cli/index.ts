@@ -8,6 +8,7 @@
  *   argus dashboard                  serve the dashboard and print the URL
  *   argus triage-log                 print the last run's triage reasoning
  *   argus baseline [--write]         inspect or extend the known-defect baseline
+ *   argus verify-run                  check the last run completed, and enforce its gate
  */
 import fs from 'node:fs';
 import http from 'node:http';
@@ -22,6 +23,7 @@ import { loadBaseline, nextBaselineId, type BaselineBug } from '../bug-filer/bas
 import { assertRunnable, runPipeline } from './pipeline.js';
 import { ensureDemoApp, resetDemoApp } from './demo-server.js';
 import { renderPrComment, type CiReportInput, buildDashboardData } from './ci-report.js';
+import { renderVerification, verifyRun } from './verify-run.js';
 
 const program = new Command();
 
@@ -288,6 +290,43 @@ program
     log.info('Review the diff, then commit it — the baseline is what keeps the gate honest.');
     for (const entry of added) {
       log.item(`${entry.id}  ${entry.title}`);
+    }
+  });
+
+// ---------------------------------------------------------------------------
+// argus verify-run
+// ---------------------------------------------------------------------------
+
+program
+  .command('verify-run')
+  .description(
+    'Verify the most recent run produced a complete artifact, then enforce the gate it recorded.',
+  )
+  .action(() => {
+    const config = loadConfig();
+    const verdict = verifyRun({
+      runsDir: config.paths.runs,
+      generatedTestsDir: config.paths.generatedTests,
+      root: config.paths.root,
+    });
+
+    log.blank();
+    process.stdout.write(`${renderVerification(verdict, config.severityFailThreshold)}\n`);
+    log.blank();
+
+    // Three outcomes, three exit codes, so a caller can tell them apart without
+    // parsing prose. "The pipeline did not finish" and "the gate failed" are
+    // different problems and deserve different exit codes: conflating them is
+    // how a run that never happened gets reported as one that found a bug.
+    if (verdict.status === 'incomplete') {
+      log.error('The pipeline did not complete — this is not a gate result.');
+      process.exit(2);
+    }
+    if (verdict.status === 'gate_failed') {
+      log.error(
+        `Argus found a new real bug at or above the "${config.severityFailThreshold}" severity threshold.`,
+      );
+      process.exit(1);
     }
   });
 

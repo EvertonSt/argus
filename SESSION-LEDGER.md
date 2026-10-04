@@ -332,3 +332,79 @@ from the actual cause.
   its stated purpose. The lesson is not "add a test"; it is that a step marked
   `continue-on-error` cannot be used as evidence that anything ran. The run
   artifact, not the step's green tick, is the proof.
+
+---
+
+## 2026-10-04 — The gate now reads the artifact, not the exit code
+
+### DID
+
+- Added `argus verify-run`, which checks the last run produced a trustworthy
+  artifact and then enforces the gate that artifact recorded. Three outcomes,
+  three exit codes: `0` complete and passed, `1` complete and failed, `2` no
+  complete run. The workflow's final step is now this command, and it no longer
+  references `steps.argus.outcome` at all.
+- `continue-on-error: true` stays on the Run Argus step, so the PR comment is
+  still posted when the run crashes — but nothing keys off that step's status
+  any more, which is the property that made it dangerous.
+- Removed the `id: argus` handle entirely rather than leaving a step id in place
+  for a future edit to reintroduce the `if:` that caused this.
+- Tightened two workflow assertions that had started passing on prose: the
+  mock-fallback check matched `--mock` only inside a comment about a deleted
+  invocation, and the new gate assertion would have matched the word
+  `steps.argus.outcome` inside the comment explaining why it is forbidden.
+  Behavioural assertions now run against the workflow with comment lines
+  stripped.
+- Tests 388 → **416** across 21 files.
+
+### PROOF
+
+Three states, each through the real CLI:
+
+```
+$ pnpm run verify-run          # nothing ran
+✗ No usable run artifact — the pipeline did not complete.
+  - no run index at data/runs/index.json — the pipeline never reached the report stage
+This is not a failing gate. Argus did not finish, so it has no verdict to report.
+exit 2
+
+$ pnpm run verify-run          # complete run, baseline intact
+✓ Gate passed  run run-20261003-232633-wvb9 · mock
+  Tests          4/8 passed
+  New bugs       0
+  Known defects  3 (baselined)
+exit 0
+
+$ pnpm run verify-run          # complete run, BASE-003 removed
+✗ Gate FAILED  run run-20261003-232713-hn4u · mock
+  Tests          4/8 passed
+  New bugs       1
+  Known defects  2 (baselined)
+  1 new bug(s) at or above "high" severity
+exit 1
+```
+
+The guard against regression was itself tested: re-inserting
+`if: steps.argus.outcome == 'failure'` into the workflow fails
+`never keys the gate off a continue-on-error step outcome`. Verified by doing
+it, not by reading the assertion.
+
+26 of the 416 tests cover the verification failure modes — missing index, empty
+index, corrupt index, index that is not an array, indexed run with no artifact,
+artifact belonging to a different run, absent gate verdict, absent summary
+counts, absent inventory, no generated specs, and unparseable JSON.
+
+### DID NOT PROVE
+
+- **`argus verify-run` has not run on a real runner yet.** All three states above
+  were rehearsed locally; the workflow that consumes them ships with this
+  change, so the first CI result is its first real execution.
+- **An incomplete run is still a failure, not a diagnosis.** Exit 2 says the
+  pipeline did not finish and names the missing piece; it does not say which
+  stage stopped, and the message has to point a human at the job log for that.
+  Argus cannot know, because the stage that died never wrote anything.
+- The half-written-artifact cases are covered by tests, not observed. A crash
+  mid-report-stage has not actually been induced on a runner.
+- Carried over and unchanged: live mode is still unproven, two defects on one
+  feature still collapse into one, and the browser-driven path and dashboard
+  still have no unit tests.

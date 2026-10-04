@@ -262,6 +262,18 @@ describe('meetsThreshold (the CI gate rule)', () => {
 describe('GitHub Actions workflow', () => {
   const workflow = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'argus.yml'), 'utf-8');
 
+  /**
+   * The workflow with comment-only lines stripped, so an assertion about
+   * behaviour cannot be satisfied by a word that happens to appear inside an
+   * explanatory comment. Two such assertions had already been quietly passing
+   * this way: one keyed off `--mock`, which only survived inside a comment
+   * about a removed invocation.
+   */
+  const workflowCode = workflow
+    .split('\n')
+    .filter((line) => !/^\s*#/.test(line))
+    .join('\n');
+
   it('triggers on pull requests', () => {
     expect(workflow).toContain('pull_request:');
   });
@@ -286,13 +298,32 @@ describe('GitHub Actions workflow', () => {
   it('falls back to mock mode when no API key is present', () => {
     // Forks and Dependabot cannot read secrets; without this they would get a
     // red X they have no way to fix.
-    expect(workflow).toContain('--mock');
-    expect(workflow).toContain('if [ -n "$ANTHROPIC_API_KEY" ]');
+    //
+    // Asserts the mechanism, not a substring: the workflow selects the
+    // `run:mock` script rather than passing `--mock` through pnpm, and the old
+    // `--mock` assertion had started passing on a word inside a comment.
+    expect(workflowCode).toContain('if [ -n "$ANTHROPIC_API_KEY" ]');
+    expect(workflowCode).toContain('echo "script=run:mock" >> "$GITHUB_OUTPUT"');
+    expect(workflowCode).toContain('pnpm run "${{ steps.mode.outputs.script }}"');
+  });
+
+  it('never keys the gate off a continue-on-error step outcome', () => {
+    // `continue-on-error: true` reports `conclusion: success` even when the
+    // command exits non-zero, so `steps.argus.outcome` cannot tell "found a
+    // bug" from "never ran". Seven consecutive runs reported the first while
+    // meaning the second. The gate reads the artifact instead.
+    expect(workflowCode).not.toContain('steps.argus.outcome');
+    expect(workflowCode).toContain('pnpm run --silent verify-run');
+  });
+
+  it('reports an incomplete run differently from a failing gate', () => {
+    expect(workflowCode).toContain('the pipeline did not complete');
+    expect(workflowCode).toContain('This is not a gate result');
   });
 
   it('posts the comment before enforcing the gate', () => {
     expect(workflow.indexOf('Post the PR comment')).toBeLessThan(
-      workflow.indexOf('Enforce the severity gate'),
+      workflow.indexOf('Verify the run, then enforce its gate'),
     );
   });
 

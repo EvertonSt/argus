@@ -17,6 +17,7 @@
     "run": "tsx src/cli/index.ts run",
     "run:mock": "tsx src/cli/index.ts run --mock",
     "ci-comment": "tsx src/cli/index.ts ci-comment",
+    "verify-run": "tsx src/cli/index.ts verify-run",
     "triage-log": "tsx src/cli/index.ts triage-log",
     "dashboard": "tsx src/cli/index.ts dashboard",
     "demo": "tsx demo-app/src/server.ts",

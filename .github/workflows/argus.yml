@@ -102,9 +102,13 @@ jobs:
           fi
 
       - name: Run Argus
-        id: argus
-        # Do not fail the step here: the gate's exit code is evaluated after the
-        # comment is posted, so reviewers always get the report.
+        # Do not fail the step here, so the comment and summary below always get
+        # to report. This is safe *only* because nothing downstream keys the
+        # gate off this step's status: `continue-on-error` makes GitHub report
+        # `conclusion: success` for a command that exited non-zero, and keying
+        # off `steps.argus.outcome` is exactly how a run that never happened
+        # came to be announced as one that found a bug. The gate reads the
+        # artifact instead.
         continue-on-error: true
         run: |
           echo "Run mode: ${{ steps.mode.outputs.label }}"
@@ -180,17 +184,35 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
-      - name: Enforce the severity gate
-        # Exit code 1 from `argus run` means a new real bug met the threshold.
-        # Defects matching baseline/known-bugs.json are reported as known and
-        # never reach this step.
+      - name: Verify the run, then enforce its gate
+        # The single authority on whether Argus passed. It reads the verdict
+        # from data/runs/<id>/run.json, which the pipeline writes only after all
+        # seven stages finish, rather than from any step's exit status.
         #
-        # Read the threshold from the env var the workflow actually sets. The
-        # message previously interpolated ARGUS_SEVERITY_FAIL_THRESHOLD, which
-        # nothing defined, so the first real run announced "at or above the ''
-        # severity threshold" - the least useful sentence available at the exact
-        # moment a reader needs it.
-        if: steps.argus.outcome == 'failure'
+        # Three outcomes, three annotations. Exit 2 means the pipeline did not
+        # complete - no artifact, no verdict - and it is deliberately a
+        # different failure from exit 1, with a message that does not pretend a
+        # gate was evaluated. Conflating them is the failure this step exists
+        # to prevent, and it happened here for seven consecutive runs.
+        #
+        # `always()` so a crashed run still gets reported as incomplete rather
+        # than leaving the job to fail on the masked step with no explanation.
+        if: always()
         run: |
-          echo "::error::Argus found a new real bug at or above the '$ARGUS_SEVERITY_FAIL_THRESHOLD' severity threshold. See the PR comment for details."
-          exit 1
+          code=0
+          pnpm run --silent verify-run || code=$?
+          case "$code" in
+            0)
+              echo "::notice::Argus run verified complete; gate passed."
+              ;;
+            1)
+              echo "::error::Argus found a new real bug at or above the '$ARGUS_SEVERITY_FAIL_THRESHOLD' severity threshold. See the PR comment for details."
+              ;;
+            2)
+              echo "::error::Argus produced no usable run artifact - the pipeline did not complete. This is not a gate result; check the job log for the stage that stopped."
+              ;;
+            *)
+              echo "::error::'argus verify-run' exited unexpectedly with $code."
+              ;;
+          esac
+          exit "$code"
