@@ -1,0 +1,63 @@
+{
+  "name": "argus",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Autonomous QA agent: plans tests, executes them in a real browser, triages its own failures, and files the ones that are real bugs.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "argus": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "argus": "tsx src/cli/index.ts",
+    "run": "tsx src/cli/index.ts run",
+    "run:mock": "tsx src/cli/index.ts run --mock",
+    "ci-comment": "tsx src/cli/index.ts ci-comment",
+    "triage-log": "tsx src/cli/index.ts triage-log",
+    "dashboard": "tsx src/cli/index.ts dashboard",
+    "demo": "tsx demo-app/src/server.ts",
+    "demo:drift": "tsx src/cli/index.ts drift-demo",
+    "demo:capture": "tsx scripts/capture-run.ts docs/run-capture.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.tests.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "dashboard:build": "pnpm --filter argus-dashboard build",
+    "dashboard:dev": "pnpm --filter argus-dashboard dev",
+    "dashboard:lint": "pnpm --filter argus-dashboard lint",
+    "verify": "pnpm verify:secrets && pnpm verify:links && pnpm verify:attribution",
+    "verify:secrets": "tsx scripts/check-secrets.ts",
+    "verify:links": "tsx scripts/check-links.ts",
+    "verify:attribution": "tsx scripts/check-attribution.ts",
+    "gate": "bash scripts/gate.sh",
+    "gate:fast": "bash scripts/gate.sh --fast"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.131.0",
+    "commander": "12.1.0",
+    "dotenv": "16.6.1",
+    "playwright": "1.63.0",
+    "systeminformation": "5.33.15"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.19.1",
+    "@vitest/coverage-v8": "2.1.9",
+    "eslint": "9.39.5",
+    "globals": "16.5.0",
+    "prettier": "3.9.9",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.0",
+    "vitest": "2.1.9",
+    "wait-on": "9.5.1"
+  }
+}

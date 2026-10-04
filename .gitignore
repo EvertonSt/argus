@@ -1,13 +1,47 @@
-# secrets and env
+# ── secrets and local environment ───────────────────────────────────────────
 .env
 .env.*
 !.env.example
 
-# dependencies and builds
+# ── dependencies and build output ──────────────────────────────────────────
 node_modules/
 dist/
 build/
 coverage/
+*.tsbuildinfo
 
-# runtime evidence
+# The dashboard is a separate workspace package with its own build directory.
+dashboard/.next/
+dashboard/out/
+dashboard/node_modules/
+
+# ── runtime evidence ────────────────────────────────────────────────────────
+# Everything Argus produces while running: run artifacts, generated Playwright
+# specs, the triage log, the JSON stores, screenshots and traces.
+#
+# These are output, not source. Committing them has the same effect as
+# committing build output - it bloats the tree and makes `git add -A` stage a
+# copy of every bug the tool has ever found, which is both noise and a small
+# leak about what was broken and when.
+data/
+generated-tests/
+argus-comment.md
 *.log
+
+# ── test and tooling output ─────────────────────────────────────────────────
+playwright-report/
+test-results/
+playwright/.cache/
+.nyc_output/
+
+# ── editors and OS ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# ── Vercel ──────────────────────────────────────────────────────────────────
+.vercel
+.vercelproject

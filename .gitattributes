@@ -1,0 +1,31 @@
+# Normalise line endings in the repository and check out LF everywhere.
+#
+# Without this, a Windows clone inherits core.autocrlf=true, rewrites every
+# text file to CRLF on checkout, and `pnpm format:check` then fails on files
+# nobody edited - Prettier's default is `endOfLine: "lf"`. The gate then passes
+# on CI and fails locally, which is the worst combination available: it teaches
+# contributors that the gate is unreliable.
+#
+# LF on checkout also keeps `scripts/gate.sh` and `run.sh` parseable by bash. A
+# CRLF shebang makes the kernel look for an interpreter named `bash\r`.
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.mjs text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.svg text eol=lf
+*.xml text eol=lf
+
+# Screenshots and the demo gif are bytes, not text.
+*.png binary
+*.gif binary
+*.ico binary
+*.pdf binary

@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /*
+     * `noUncheckedIndexedAccess` is deliberately OFF here, and that is the one
+     * real difference between this project and the product project.
+     *
+     * The suite indexes into arrays on purpose: `rows[0].verdict`,
+     * `result[0].id`, a fixture's second element. Those are the assertions
+     * doing their job, and the flag would reject every one of them as a type
+     * error while the runtime behaviour is exactly what is being tested.
+     *
+     * Turning it off in src/ instead would be the wrong trade. The product
+     * reads rows out of a query result and a JSON body, and indexing blindly
+     * there produces a wrong verdict rather than a crash - which is the
+     * expensive kind of bug for a QA tool to have.
+     */
+    "noUncheckedIndexedAccess": false,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["test/**/*.ts", "src/**/*.ts", "playwright.config.ts"],
+  "exclude": ["node_modules", "dist", "generated-tests", "demo-app", "dashboard"]
+}

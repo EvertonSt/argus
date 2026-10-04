@@ -1,0 +1,45 @@
+# The dashboard is a separate Next.js app with its own dependency tree and its
+# own lockfile. Keeping it inside the workspace means one install command, one
+# root lockfile, and one audit - rather than a root project plus a nested
+# project whose `npm ci` can drift from whatever the root resolved.
+packages:
+  - '.'
+  - 'dashboard'
+
+# pnpm 11 blocks every dependency's lifecycle script by default and reads this
+# allowlist from pnpm-workspace.yaml (not package.json). `allowBuilds` is an
+# explicit true/false map, so approving a package is a visible diff a reviewer
+# can argue with.
+#
+#   esbuild        — ships a prebuilt binary; backs tsx and Vitest
+#   unrs-resolver  — ships a prebuilt binary; backs the lint resolver
+#   sharp          — image optimisation behind Next.js; links a prebuilt
+#                    binary for the platform instead of compiling one
+#
+# All three install from prebuilt artifacts rather than compiling untrusted
+# source. Anything set to `false` - and anything not named here - stays blocked,
+# so a future transitive dependency cannot run a postinstall script without
+# someone editing this file on purpose.
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+
+# Next.js pins two of its own transitive dependencies below the versions that
+# carry their security fixes:
+#
+#   next > postcss   8.4.31   (advisories want >= 8.5.23)
+#   next > sharp     0.34.5   (advisories want >= 0.35.4)
+#
+# There is no version of next that ships a fixed pair, so `pnpm audit` cannot
+# be clean without an override. Both are same-major upgrades, both are already
+# declared directly by this workspace (postcss for the dashboard's own
+# stylesheet pipeline, sharp via the allowBuilds list above), and neither is
+# version-coupled to Next's API surface - Next calls them through stable,
+# long-stable interfaces.
+#
+# The dashboard build and the e2e run are what prove the override is safe. If a
+# future Next release needs a different pair, this is the place it surfaces.
+overrides:
+  postcss: 8.5.28
+  sharp: 0.35.5
