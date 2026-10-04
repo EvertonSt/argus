@@ -1,0 +1,5 @@
+{
+  "verdict": "flaky",
+  "confidence": 0.62,
+  "reasoning": "The stats total disagreed with the seeded count because an earlier test in the same run mutated shared server state. The test would pass in isolation or after a reset, so this is test-ordering noise rather than an application defect."
+}

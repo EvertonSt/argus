@@ -1,0 +1,10 @@
+{
+  "name": "argus-demo-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tasker — a deliberately imperfect task tracker used as Argus's default test target.",
+  "scripts": {
+    "start": "tsx src/server.ts"
+  }
+}

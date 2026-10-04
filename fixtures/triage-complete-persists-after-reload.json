@@ -1,0 +1,5 @@
+{
+  "verdict": "real_bug",
+  "confidence": 0.91,
+  "reasoning": "The checkbox was found and checked successfully, but after page.reload() it read back unchecked. The completed state is never sent to the server, so it cannot survive a refresh. This is a persistence defect in the application, not a test problem."
+}

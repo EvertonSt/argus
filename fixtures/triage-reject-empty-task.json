@@ -1,0 +1,5 @@
+{
+  "verdict": "real_bug",
+  "confidence": 0.88,
+  "reasoning": "Submitting the form with an empty input increased the task count instead of leaving it unchanged, so the app accepted an empty task. Missing input validation on the add-task endpoint."
+}

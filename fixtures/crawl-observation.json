@@ -1,0 +1,114 @@
+[
+  {
+    "url": "http://localhost:4317",
+    "route": "/",
+    "title": "Tasks",
+    "elements": [
+      {
+        "kind": "form",
+        "label": "Add task",
+        "selector": "form",
+        "target": "/tasks/add"
+      },
+      {
+        "kind": "form",
+        "label": "Delete",
+        "selector": "#[object HTMLInputElement]",
+        "target": "/tasks/delete"
+      },
+      {
+        "kind": "button",
+        "label": "Add task",
+        "selector": "[data-testid=\"add-task\"]"
+      },
+      {
+        "kind": "button",
+        "label": "Delete",
+        "selector": "[data-testid=\"delete-task\"]"
+      },
+      {
+        "kind": "checkbox",
+        "label": "Mark complete",
+        "selector": "[data-testid=\"toggle-complete\"]"
+      },
+      {
+        "kind": "input",
+        "label": "What needs doing?",
+        "selector": "[data-testid=\"new-task-input\"]"
+      },
+      {
+        "kind": "link",
+        "label": "Tasks",
+        "selector": "[data-testid=\"nav-tasks\"]",
+        "target": "/"
+      },
+      {
+        "kind": "link",
+        "label": "Stats",
+        "selector": "[data-testid=\"nav-stats\"]",
+        "target": "/stats"
+      },
+      {
+        "kind": "link",
+        "label": "About",
+        "selector": "[data-testid=\"nav-about\"]",
+        "target": "/about"
+      },
+      {
+        "kind": "list",
+        "label": "task-list",
+        "selector": "[data-testid=\"task-list\"]"
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4317/stats",
+    "route": "/stats",
+    "title": "Stats",
+    "elements": [
+      {
+        "kind": "link",
+        "label": "Tasks",
+        "selector": "[data-testid=\"nav-tasks\"]",
+        "target": "/"
+      },
+      {
+        "kind": "link",
+        "label": "Stats",
+        "selector": "[data-testid=\"nav-stats\"]",
+        "target": "/stats"
+      },
+      {
+        "kind": "link",
+        "label": "About",
+        "selector": "[data-testid=\"nav-about\"]",
+        "target": "/about"
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4317/about",
+    "route": "/about",
+    "title": "About",
+    "elements": [
+      {
+        "kind": "link",
+        "label": "Tasks",
+        "selector": "[data-testid=\"nav-tasks\"]",
+        "target": "/"
+      },
+      {
+        "kind": "link",
+        "label": "Stats",
+        "selector": "[data-testid=\"nav-stats\"]",
+        "target": "/stats"
+      },
+      {
+        "kind": "link",
+        "label": "About",
+        "selector": "[data-testid=\"nav-about\"]",
+        "target": "/about"
+      }
+    ]
+  }
+]

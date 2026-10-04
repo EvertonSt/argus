@@ -1,0 +1,6 @@
+{
+  "verdict": "selector_drift",
+  "confidence": 0.86,
+  "reasoning": "The click timed out because getByRole('button', { name: 'Add task' }) matched nothing, while the rest of the page rendered and the add-task form is still present. The button was relabelled 'Create task' \u2014 the feature works, the test's locator is stale.",
+  "suggestedFix": "Replace page.getByRole('button', { name: 'Add task' }) with page.getByTestId('add-task'), which survives label changes; or update the name to 'Create task'."
+}
