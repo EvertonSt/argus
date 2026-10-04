@@ -7,6 +7,7 @@
   "engines": {
     "node": ">=22"
   },
+  "packageManager": "pnpm@11.20.0",
   "bin": {
     "argus": "./dist/cli/index.js"
   },
